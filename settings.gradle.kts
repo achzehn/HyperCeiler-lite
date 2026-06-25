@@ -11,28 +11,7 @@ fun loadGprCredentials(): GprCredentials {
         return GprCredentials(envUser, envKey)
     }
 
-    // 从 signing.properties 读取
-    val propsFile = File(rootDir, "signing.properties")
-    if (!propsFile.exists()) {
-        throw GradleException(
-            "Missing GitHub credentials. Please either:\n" +
-            "  1. Set GIT_ACTOR and GIT_TOKEN environment variables, or\n" +
-            "  2. Create 'signing.properties' with 'gpr.user' and 'gpr.key'"
-        )
-    }
-
-    val props = java.util.Properties().apply {
-        propsFile.inputStream().use { load(it) }
-    }
-
-    val user = props.getProperty("gpr.user")?.takeIf { it.isNotBlank() }
-    val key = props.getProperty("gpr.key")?.takeIf { it.isNotBlank() }
-
-    if (user == null || key == null) {
-        throw GradleException("'gpr.user' and 'gpr.key' must be set in 'signing.properties'")
-    }
-
-    return GprCredentials(user, key)
+    return GprCredentials("", "")
 }
 
 val gprCredentials by lazy { loadGprCredentials() }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:quick_restart="com.android.quicksearchbox">
+
+    <PreferenceCategory android:title="@string/quicksearchbox_settings">
+
+        <SwitchPreference
+            android:key="quicksearchbox_search_engine"
+            android:title="@string/quicksearchbox_search_engine"
+            android:summary="@string/quicksearchbox_search_engine_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

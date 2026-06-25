@@ -140,14 +140,17 @@ internal object DexKitCacheManager {
         val currentBridge = bridge ?: throw IllegalStateException("DexKit not initialized")
         var result: Any? = null
         currentBridge.withBridge { rawBridge ->
-            val baseData: BaseData = try {
+            val baseData: BaseData? = try {
                 iDexKit.dexkit(rawBridge)
             } catch (e: ReflectiveOperationException) {
                 throw RuntimeException(e)
             }
-            result = resolveAndCache(baseData, key, classLoader)
+            if (baseData != null) {
+                result = resolveAndCache(baseData, key, classLoader)
+            }
         }
 
+        @Suppress("UNCHECKED_CAST")
         return result as T
     }
 

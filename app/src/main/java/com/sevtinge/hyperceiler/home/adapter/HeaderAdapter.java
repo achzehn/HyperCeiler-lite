@@ -274,7 +274,7 @@ public class HeaderAdapter extends RecyclerView.Adapter<HeaderAdapter.HeaderView
 
     private void setIconAndTitle(HeaderViewHolder holder, Header header) {
         long id = header.id;
-        if (holder == null || id == R.id.various || TextUtils.isEmpty(header.summary)) return;
+        if (holder == null || TextUtils.isEmpty(header.summary)) return;
         // 快速滚动时跳过异步图标加载，停止后会通过 notifyDataSetChanged 重新 bind
         if (mIsScrolling) return;
         String packageName = header.summary.toString();

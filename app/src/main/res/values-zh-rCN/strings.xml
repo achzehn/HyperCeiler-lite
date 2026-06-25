@@ -187,4 +187,26 @@
 
     <string name="tos_update_title">《用户协议》与《隐私政策》</string>
     <string name="tos_update_desc">我们于近期更新了《用户协议》和/或《隐私政策》，请及时查看。\n继续使用 HyperCeiler 即代表您同意我们的<annotation key="protocol">《用户协议》</annotation> 及<annotation key="privacy">《隐私政策》</annotation>。</string>
+
+    <!-- Browser -->
+    <string name="browser">浏览器</string>
+    <string name="browser_settings">浏览器设置</string>
+    <string name="browser_disable_update_check">禁用更新检查</string>
+    <string name="browser_disable_update_check_summary">阻止浏览器检查更新</string>
+    <string name="browser_skip_splash">跳过启动页</string>
+    <string name="browser_skip_splash_summary">跳过浏览器启动广告页面</string>
+    <string name="browser_configuration">配置优化</string>
+    <string name="browser_configuration_summary">优化浏览器配置（关闭推荐、广告等）</string>
+    <string name="browser_hide_homepage_top_bar">隐藏首页顶部栏</string>
+    <string name="browser_hide_homepage_top_bar_summary">隐藏浏览器首页顶部栏</string>
+    <string name="browser_block_dialog">阻止弹窗</string>
+    <string name="browser_block_dialog_summary">阻止浏览器弹窗对话框</string>
+    <string name="browser_search_engine">替换为必应搜索引擎</string>
+    <string name="browser_search_engine_summary">将浏览器搜索引擎替换为必应</string>
+
+    <!-- QuickSearchBox -->
+    <string name="quicksearchbox">搜索</string>
+    <string name="quicksearchbox_settings">搜索设置</string>
+    <string name="quicksearchbox_search_engine">替换为必应搜索引擎</string>
+    <string name="quicksearchbox_search_engine_summary">将系统搜索应用的搜索引擎替换为必应</string>
 </resources>

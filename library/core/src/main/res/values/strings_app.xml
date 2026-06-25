@@ -1788,4 +1788,25 @@
     <string name="custom_hook_mode">Select mode</string>
     <string name="open_source">Open source projects</string>
     <string name="close_source">Close source projects</string>
+
+    <!-- Browser -->
+    <string name="browser_settings">Browser Settings</string>
+    <string name="browser_ad_block">Ad blocker</string>
+    <string name="browser_ad_block_summary">Remove ads and recommendations on browser homepage</string>
+    <string name="browser_skip_splash">Skip splash screen</string>
+    <string name="browser_skip_splash_summary">Disable ads on startup screen</string>
+    <string name="browser_show_sug_switch">Restore search suggestion settings</string>
+    <string name="browser_show_sug_switch_summary">Show hidden search suggestion switch</string>
+    <string name="browser_hide_homepage_top_bar">Hide homepage top bar</string>
+    <string name="browser_hide_homepage_top_bar_summary">Hide top bar on simplified homepage</string>
+    <string name="browser_block_dialog">Block marketing dialogs</string>
+    <string name="browser_block_dialog_summary">Block various promotion pop-ups</string>
+    <string name="browser_search_engine">Add search engine</string>
+    <string name="browser_search_engine_summary">Add Bing search engine</string>
+
+    <!-- QuickSearchBox -->
+    <string name="quicksearchbox">Search</string>
+    <string name="quicksearchbox_settings">Search Settings</string>
+    <string name="quicksearchbox_search_engine">Add search engine</string>
+    <string name="quicksearchbox_search_engine_summary">Add Bing search engine</string>
 </resources>

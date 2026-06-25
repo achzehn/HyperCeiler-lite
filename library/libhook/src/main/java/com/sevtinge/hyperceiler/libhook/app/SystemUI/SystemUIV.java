@@ -30,7 +30,7 @@ import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
 import com.sevtinge.hyperceiler.libhook.rules.home.navigation.HideNavigationBar;
 import com.sevtinge.hyperceiler.libhook.rules.systemframework.others.UnlockAlwaysOnDisplay;
 import com.sevtinge.hyperceiler.libhook.rules.systemframework.volume.VolumeMediaSteps;
-import com.sevtinge.hyperceiler.libhook.rules.systemsettings.AllowManageAllNotifications;
+
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.AutoDismissExpandedPopupsHook;
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.BlurEnable;
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.ControlCenterStyle;
@@ -269,7 +269,6 @@ public class SystemUIV extends BaseLoad {
             PrefsBridge.getBoolean("system_framework_guided_access")
                 && PrefsBridge.getBoolean("system_framework_guided_access_block_dialog"));
         initHook(new UiLockApp(), PrefsBridge.getBoolean("system_framework_guided_access") && PrefsBridge.getBoolean("system_framework_guided_access_status"));
-        initHook(new AllowManageAllNotifications(), PrefsBridge.getBoolean("system_framework_allow_manage_all_notifications"));
         initHook(new MonetThemeOverlay(), PrefsBridge.getBoolean("system_ui_monet_overlay_custom"));
         initHook(new BrightnessPct(), PrefsBridge.getBoolean("system_showpct_title"));
         initHook(new NotificationFreeform(), PrefsBridge.getBoolean("system_ui_notification_freeform"));

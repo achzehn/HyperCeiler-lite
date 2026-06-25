@@ -30,9 +30,7 @@
             android:fragment="com.sevtinge.hyperceiler.hooker.securitycenter.ApplicationsSettings"
             android:title="@string/security_center_app_title" />
 
-        <com.sevtinge.hyperceiler.prefs.XmlPreference
-            android:title="@string/security_center_battery_title"
-            app:inflatedXml="@xml/security_center_battery"/>
+
 
         <Preference
             android:fragment="com.sevtinge.hyperceiler.hooker.securitycenter.PrivacySafetySettings"

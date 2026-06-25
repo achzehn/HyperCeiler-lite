@@ -23,5 +23,5 @@ import com.sevtinge.hyperceiler.dashboard.DashboardFragment;
 
 public class MiPadSettings extends DashboardFragment {
     @Override
-    public int getPreferenceScreenResId() { return R.xml.various_mipad; }
+    public int getPreferenceScreenResId() { return R.xml.framework_display; }
 }

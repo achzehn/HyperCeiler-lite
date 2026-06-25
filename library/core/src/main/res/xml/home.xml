@@ -26,11 +26,10 @@
         android:title="@string/unsupported_func_tips" />
 
     <PreferenceCategory>
-        <com.sevtinge.hyperceiler.prefs.XmlPreference
+        <Preference
             android:key="prefs_key_home_gesture"
             android:title="@string/home_gesture"
-            android:fragment="com.sevtinge.hyperceiler.hooker.home.HomeGestureSettings"
-            app:inflatedXml="@xml/home_gesture"/>
+            android:fragment="com.sevtinge.hyperceiler.hooker.home.HomeGestureSettings" />
 
         <Preference
             android:key="prefs_key_home_layout"

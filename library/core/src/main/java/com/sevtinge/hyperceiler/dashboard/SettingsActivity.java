@@ -26,12 +26,6 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.sevtinge.hyperceiler.core.R;
 import com.sevtinge.hyperceiler.dashboard.base.SettingsBaseActivity;
-import com.sevtinge.hyperceiler.hooker.framework.OtherSettings;
-import com.sevtinge.hyperceiler.hooker.home.HomeDockSettings;
-import com.sevtinge.hyperceiler.hooker.home.HomeFolderSettings;
-import com.sevtinge.hyperceiler.hooker.home.HomeGestureSettings;
-import com.sevtinge.hyperceiler.hooker.various.AlertDialogSettings;
-import com.sevtinge.hyperceiler.sub.MultiActionSettings;
 import com.sevtinge.hyperceiler.utils.PersistConfig;
 
 import fan.preference.PreferenceFragment;
@@ -50,13 +44,7 @@ public abstract class SettingsActivity extends SettingsBaseActivity
 
     @Override
     public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, @NonNull Preference pref) {
-        boolean isAddPreferenceKey = caller instanceof OtherSettings ||
-            caller instanceof HomeDockSettings ||
-            caller instanceof HomeFolderSettings ||
-            caller instanceof AlertDialogSettings ||
-            caller instanceof HomeGestureSettings ||
-            caller instanceof MultiActionSettings;
-
+        boolean isAddPreferenceKey = false;
         onStartSettingsForArguments(pref, isAddPreferenceKey);
         return true;
     }

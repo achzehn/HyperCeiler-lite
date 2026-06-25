@@ -97,4 +97,10 @@
     <string name="debug_mode_running">The current target scope is in debug mode. If not necessary, please go and turn it off.\nCurrent app version: %1$s\nSelected target version: %2$s\nSuccessfully hooked: %3$s</string>
     <string name="debug_mode_switch">Debug version</string>
 
+    <!--Browser-->
+    <string name="browser_disable_update">Disable update check</string>
+    <string name="browser_disable_update_summary">Prevent browser from checking for updates</string>
+    <string name="browser_configuration">Browser configuration</string>
+    <string name="browser_configuration_summary">Disable hot spots, recommendations and other features</string>
+
 </resources>

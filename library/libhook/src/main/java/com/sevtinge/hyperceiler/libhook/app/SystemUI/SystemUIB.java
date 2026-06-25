@@ -25,7 +25,7 @@ import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.libhook.appbase.systemui.StatusBarActionBootstrap;
 import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
 import com.sevtinge.hyperceiler.libhook.rules.systemframework.volume.VolumeMediaSteps;
-import com.sevtinge.hyperceiler.libhook.rules.systemsettings.AllowManageAllNotifications;
+
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.AutoDismissExpandedPopupsHook;
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.ControlCenterStyle;
 import com.sevtinge.hyperceiler.libhook.rules.systemui.controlcenter.CustomCarrierText;
@@ -221,7 +221,6 @@ public class SystemUIB extends BaseLoad {
             PrefsBridge.getBoolean("system_framework_guided_access")
                 && PrefsBridge.getBoolean("system_framework_guided_access_block_dialog"));
         initHook(new MonetThemeOverlay(), PrefsBridge.getBoolean("system_ui_monet_overlay_custom"));
-        initHook(new AllowManageAllNotifications(), PrefsBridge.getBoolean("system_framework_allow_manage_all_notifications"));
         initHook(new NotificationFreeform(), PrefsBridge.getBoolean("system_ui_notification_freeform"));
         initHook(new BrightnessPct(), PrefsBridge.getBoolean("system_showpct_title"));
         initHook(DisableMiuiMultiWinSwitch.INSTANCE, PrefsBridge.getBoolean("system_ui_disable_miui_multi_win_switch"));

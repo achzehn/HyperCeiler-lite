@@ -534,7 +534,7 @@ public class HomePageFragment extends BasePreferenceFragment implements OnComple
         // 预加载所有需要图标的 header，全部完成后再刷新列表
         List<String> packageNames = new ArrayList<>();
         for (Header h : displayHeaders) {
-            if (h.fragment != null && !TextUtils.isEmpty(h.summary) && h.id != R.id.various) {
+            if (h.fragment != null && !TextUtils.isEmpty(h.summary)) {
                 packageNames.add(h.summary.toString());
             }
         }

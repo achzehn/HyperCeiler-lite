@@ -16,3 +16,7 @@ local.properties
 signing.properties
 /.kotlin
 /library/hook
+*.log
+log日志/
+.gitignore
+trush/

@@ -1747,4 +1747,25 @@
     <string name="custom_hook_mode">选择模式</string>
     <string name="open_source">开源项目</string>
     <string name="close_source">闭源项目</string>
+
+    <!-- Browser -->
+    <string name="browser_settings">浏览器设置</string>
+    <string name="browser_ad_block">屏蔽广告</string>
+    <string name="browser_ad_block_summary">移除浏览器首页广告和推荐内容</string>
+    <string name="browser_skip_splash">禁用启动屏幕</string>
+    <string name="browser_skip_splash_summary">理论上还会禁用启动屏幕上的广告（无法保证）</string>
+    <string name="browser_show_sug_switch">恢复搜索精选设置</string>
+    <string name="browser_show_sug_switch_summary">显示搜索设置中被隐藏的搜索精选开关，关闭后即可禁用搜索页面的应用、视频、小说等额外推荐</string>
+    <string name="browser_hide_homepage_top_bar">隐藏主页顶栏</string>
+    <string name="browser_hide_homepage_top_bar_summary">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
+    <string name="browser_block_dialog">屏蔽营销弹窗</string>
+    <string name="browser_block_dialog_summary">阻止各种推广弹窗弹出，如小组件推荐对话框</string>
+    <string name="browser_search_engine">增加搜索引擎</string>
+    <string name="browser_search_engine_summary">添加必应搜索引擎</string>
+
+    <!-- QuickSearchBox -->
+    <string name="quicksearchbox">搜索</string>
+    <string name="quicksearchbox_settings">搜索设置</string>
+    <string name="quicksearchbox_search_engine">增加搜索引擎</string>
+    <string name="quicksearchbox_search_engine_summary">添加必应搜索引擎</string>
 </resources>
