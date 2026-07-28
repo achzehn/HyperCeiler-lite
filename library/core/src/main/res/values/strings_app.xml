@@ -473,6 +473,8 @@
     <string name="system_framework_auto_start_apps_desc">The selected app won\'t be restricted by the restriction chain and can start automatically</string>
     <string name="system_other_flag_secure">Allow screenshot</string>
     <string name="system_other_flag_secure_desc">Allows screenshots and screen recordings of any app</string>
+    <string name="system_framework_disable_keep_screen_on">Disable keep screen on</string>
+    <string name="system_framework_disable_keep_screen_on_desc">Prevent apps from keeping the screen on, ignore FLAG_KEEP_SCREEN_ON flag</string>
     <string name="system_other_delete_on_post_notification">Remove pop-up windows notification</string>
     <string name="system_other_delete_on_post_notification_desc">Remove \"This app is displaying over other apps\" notification</string>
     <string name="system_framework_share_menu_test">Share menu test</string>
@@ -1809,4 +1811,15 @@
     <string name="quicksearchbox_settings">Search Settings</string>
     <string name="quicksearchbox_search_engine">Add search engine</string>
     <string name="quicksearchbox_search_engine_summary">Add Bing search engine</string>
+
+    <!-- Bilibili -->
+    <string name="bilibili">Bilibili</string>
+    <string name="bilibili_blue">Bilibili Blue</string>
+    <string name="bilibili_in">Bilibili International</string>
+    <string name="bilibili_hd">Bilibili HD</string>
+    <string name="bilibili_settings">Bilibili Settings</string>
+    <string name="bilibili_live_invisible">Live invisible viewing</string>
+    <string name="bilibili_live_invisible_summary">Watch Bilibili live streams invisibly, hide entry notifications and heartbeat</string>
+    <string name="bilibili_remove_block">Remove restrictions</string>
+    <string name="bilibili_remove_block_summary">Bypass user block status checks and roaming restrictions</string>
 </resources>

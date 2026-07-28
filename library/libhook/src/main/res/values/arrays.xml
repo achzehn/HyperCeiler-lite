@@ -47,6 +47,10 @@
         <item>com.xiaomi.trustservice</item> <!--MiTrustService-->
         <item>com.xiaomi.xmsf</item> <!--小米服务框架-->
         <item>miui.systemui.plugin</item> <!--系统界面组件-->
+        <item>tv.danmaku.bili</item> <!--哔哩哔哩-->
+        <item>com.bilibili.app.blue</item> <!--哔哩哔哩蓝版-->
+        <item>com.bilibili.app.in</item> <!--哔哩哔哩国际版-->
+        <item>tv.danmaku.bilibilihd</item> <!--哔哩哔哩HD-->
     </string-array>
 
     <array name="miui_freeform_black_list">

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.sevtinge.hyperceiler.common"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 35

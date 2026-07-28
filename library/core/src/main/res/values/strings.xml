@@ -98,8 +98,8 @@
     <string name="debug_mode_switch">Debug version</string>
 
     <!--Browser-->
-    <string name="browser_disable_update">Disable update check</string>
-    <string name="browser_disable_update_summary">Prevent browser from checking for updates</string>
+    <string name="browser_disable_update_check">Disable update check</string>
+    <string name="browser_disable_update_check_summary">Prevent browser from checking for updates</string>
     <string name="browser_configuration">Browser configuration</string>
     <string name="browser_configuration_summary">Disable hot spots, recommendations and other features</string>
 

@@ -49,7 +49,6 @@ import com.sevtinge.hyperceiler.BuildConfig;
 import com.sevtinge.hyperceiler.R;
 import com.sevtinge.hyperceiler.common.log.AndroidLog;
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
-import com.sevtinge.hyperceiler.expansion.utils.SignUtils;
 import com.sevtinge.hyperceiler.utils.LanguageHelper;
 
 import org.json.JSONArray;
@@ -227,7 +226,7 @@ public class NoticeProcessor {
         }
 
         // Is need sign check
-        return !n.signCheckPassNeed || SignUtils.isSignCheckPass(context);
+        return true;
     }
 
     public static boolean isNeedShowTosDialog(NoticeProcessor.NoticeResult result){

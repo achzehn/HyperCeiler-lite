@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:quick_restart="tv.danmaku.bili">
+
+    <PreferenceCategory android:title="@string/bilibili_settings">
+
+        <SwitchPreference
+            android:key="bilibili_live_invisible"
+            android:title="@string/bilibili_live_invisible"
+            android:summary="@string/bilibili_live_invisible_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
+            android:key="bilibili_remove_block"
+            android:title="@string/bilibili_remove_block"
+            android:summary="@string/bilibili_remove_block_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

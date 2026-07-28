@@ -178,4 +178,32 @@
         android:summary="com.android.quicksearchbox"
         android:title="@string/quicksearchbox"
         app:inflatedXml="@xml/quicksearchbox"/>
+
+    <header
+        android:icon="@drawable/ic_default"
+        android:id="@+id/bili"
+        android:summary="tv.danmaku.bili"
+        android:title="@string/bilibili"
+        app:inflatedXml="@xml/bili"/>
+
+    <header
+        android:icon="@drawable/ic_default"
+        android:id="@+id/bili_blue"
+        android:summary="com.bilibili.app.blue"
+        android:title="@string/bilibili_blue"
+        app:inflatedXml="@xml/bili_blue"/>
+
+    <header
+        android:icon="@drawable/ic_default"
+        android:id="@+id/bili_in"
+        android:summary="com.bilibili.app.in"
+        android:title="@string/bilibili_in"
+        app:inflatedXml="@xml/bili_in"/>
+
+    <header
+        android:icon="@drawable/ic_default"
+        android:id="@+id/bili_hd"
+        android:summary="tv.danmaku.bilibilihd"
+        android:title="@string/bilibili_hd"
+        app:inflatedXml="@xml/bili_hd"/>
 </preference-headers>

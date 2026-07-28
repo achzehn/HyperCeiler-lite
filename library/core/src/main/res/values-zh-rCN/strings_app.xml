@@ -433,6 +433,8 @@
     <string name="system_framework_auto_start_apps_desc">选中的应用将不会被限制链限制，能够自启动</string>
     <string name="system_other_flag_secure">允许截屏</string>
     <string name="system_other_flag_secure_desc">允许对任意应用进行截屏和录屏</string>
+    <string name="system_framework_disable_keep_screen_on">禁止保持屏幕常亮</string>
+    <string name="system_framework_disable_keep_screen_on_desc">阻止应用保持屏幕常亮，忽略 FLAG_KEEP_SCREEN_ON 标志</string>
     <string name="system_other_delete_on_post_notification">移除上层显示通知</string>
     <string name="system_other_delete_on_post_notification_desc">移除 \"此应用正显示在屏幕上其他应用的上层\" 通知</string>
     <string name="system_framework_share_menu_test">分享菜单测试</string>
@@ -1768,4 +1770,15 @@
     <string name="quicksearchbox_settings">搜索设置</string>
     <string name="quicksearchbox_search_engine">增加搜索引擎</string>
     <string name="quicksearchbox_search_engine_summary">添加必应搜索引擎</string>
+
+    <!-- Bilibili -->
+    <string name="bilibili">哔哩哔哩</string>
+    <string name="bilibili_blue">哔哩哔哩蓝版</string>
+    <string name="bilibili_in">哔哩哔哩国际版</string>
+    <string name="bilibili_hd">哔哩哔哩HD</string>
+    <string name="bilibili_settings">哔哩哔哩设置</string>
+    <string name="bilibili_live_invisible">直播隐身观看</string>
+    <string name="bilibili_live_invisible_summary">在哔哩哔哩直播间隐身观看，隐藏进场通知和心跳</string>
+    <string name="bilibili_remove_block">解除限制</string>
+    <string name="bilibili_remove_block_summary">绕过用户封禁状态检查和漫游功能限制</string>
 </resources>

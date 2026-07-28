@@ -49,7 +49,6 @@ import com.sevtinge.hyperceiler.common.log.AndroidLog;
 import com.sevtinge.hyperceiler.common.log.LoggerHealthChecker;
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.common.utils.api.ProjectApi;
-import com.sevtinge.hyperceiler.expansion.utils.SignUtils;
 import com.sevtinge.hyperceiler.home.banner.HomePageBannerManager;
 
 import java.text.SimpleDateFormat;
@@ -132,8 +131,7 @@ public class DeviceInfoBuilder {
             }
             String loggerStatus = IS_LOGGER_ALIVE + ", " + formatLoggerStatusDetail();
             propertiesCheck.put("LoggerStatus", loggerStatus);
-            propertiesCheck.put("Signature", SignUtils.getSHA256Signature(context));
-            propertiesCheck.put("SignCheckPass", String.valueOf(SignUtils.isSignCheckPass(context)));
+
         } catch (Exception e) {
             AndroidLog.w(TAG, "Failed to collect check info", e);
         }
