@@ -24,6 +24,8 @@ import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
 import com.sevtinge.hyperceiler.libhook.rules.milink.AllowCameraDevices;
 import com.sevtinge.hyperceiler.libhook.rules.milink.DisablePcManagerClipboardRegionCheck;
 import com.sevtinge.hyperceiler.libhook.rules.milink.FuckHpplay;
+import com.sevtinge.hyperceiler.libhook.rules.milink.NotificationClickFlowHook;
+import com.sevtinge.hyperceiler.libhook.rules.milink.NotificationDiscoveryHook;
 import com.sevtinge.hyperceiler.libhook.rules.milink.UnlockMiShare;
 import com.sevtinge.hyperceiler.libhook.rules.milink.UnlockSendApp;
 
@@ -37,5 +39,7 @@ public class MiLink extends BaseLoad {
         initHook(new DisablePcManagerClipboardRegionCheck(), PrefsBridge.getBoolean("milink_disable_pc_clipboard_region_check"));
         initHook(new AllowCameraDevices(), PrefsBridge.getBoolean("milink_allow_camera_devices"));
         initHook(new FuckHpplay(), PrefsBridge.getBoolean("milink_fuck_hpplay"));
+        initHook(new NotificationDiscoveryHook(), PrefsBridge.getBoolean("milink_notification_discovery_compatibility"));
+        initHook(new NotificationClickFlowHook(), PrefsBridge.getBoolean("milink_notification_click_flow"));
     }
 }

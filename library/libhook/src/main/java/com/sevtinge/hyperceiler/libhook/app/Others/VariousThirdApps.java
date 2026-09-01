@@ -33,7 +33,6 @@ import com.sevtinge.hyperceiler.libhook.appbase.input.InputMethodClassLoaderDisp
 import com.sevtinge.hyperceiler.libhook.appbase.input.InputMethodConfig;
 import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
 import com.sevtinge.hyperceiler.libhook.rules.various.MusicHooks;
-import com.sevtinge.hyperceiler.libhook.rules.various.DisableKeepScreenOn;
 import com.sevtinge.hyperceiler.libhook.rules.various.clipboard.BaiduClipboard;
 import com.sevtinge.hyperceiler.libhook.rules.various.clipboard.SoGouClipboard;
 import com.sevtinge.hyperceiler.libhook.rules.various.clipboard.UnlockIme;
@@ -84,7 +83,6 @@ public class VariousThirdApps extends BaseLoad {
         }
 
         initMusicHooks();
-        initDisableKeepScreenOn();
     }
 
     private void initInputMethodHooks() {
@@ -107,9 +105,6 @@ public class VariousThirdApps extends BaseLoad {
         initHook(MusicHooks.INSTANCE, PrefsBridge.getBoolean("system_ui_statusbar_music_switch") && PrefsBridge.getBoolean("system_ui_statusbar_music_show_app"));
     }
 
-    private void initDisableKeepScreenOn() {
-        initHook(new DisableKeepScreenOn(), PrefsBridge.getBoolean("system_framework_disable_keep_screen_on"));
-    }
     private Set<String> getEnabledInputMethodPackages(Context context) {
         try {
             if (context == null) {

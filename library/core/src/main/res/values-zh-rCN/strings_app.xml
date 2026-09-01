@@ -1012,6 +1012,10 @@
     <string name="milink_disable_pc_clipboard_region_check_desc">修复电脑管家向手机或平板同步剪贴板时，因地区不一致被互联互通服务拦截</string>
     <string name="milink_allow_camera_devices">强制支持摄像头流转</string>
     <string name="milink_fuck_hpplay">阻止生成乐播投屏相关文件</string>
+    <string name="milink_notification_discovery_compatibility">通知设备发现兼容</string>
+    <string name="milink_notification_discovery_compatibility_desc">在本地设备发现时绕过 Cast 位检查，提升兼容性</string>
+    <string name="milink_notification_click_flow">通知点击流转</string>
+    <string name="milink_notification_click_flow_desc">将通知点击转换为原生 PIN_APP 事务，支持跨设备流转</string>
     <!--录音机-->
     <string name="sound_recorder">录音机</string>
     <string name="sound_recorder_disable_ai_watermark">禁用水印</string>

@@ -27,6 +27,7 @@ import com.sevtinge.hyperceiler.common.log.XposedLog;
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.libhook.app.CorePatch.CorePatch;
 import com.sevtinge.hyperceiler.libhook.rules.systemframework.others.FlagSecure;
+import com.sevtinge.hyperceiler.libhook.rules.various.DisableKeepScreenOn;
 import com.sevtinge.hyperceiler.libhook.safecrash.CrashMonitor;
 import com.sevtinge.hyperceiler.libhook.utils.api.ContextUtils;
 
@@ -95,6 +96,10 @@ public class XposedInitEntry extends XposedModule {
         if (PrefsBridge.getBoolean("system_other_flag_secure")) {
             new FlagSecure().onLoad(lpparam);
             XposedLog.d(TAG, "system", "FlagSecure loaded");
+        }
+        if (PrefsBridge.getBoolean("system_framework_disable_keep_screen_on")) {
+            new DisableKeepScreenOn().init();
+            XposedLog.d(TAG, "system", "DisableKeepScreenOn loaded");
         }
 
         // load Hook

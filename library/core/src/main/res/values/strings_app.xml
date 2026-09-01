@@ -1059,6 +1059,10 @@
     <string name="milink_disable_pc_clipboard_region_check_desc">Fixes PC to phone or tablet clipboard sync blocked by region mismatch</string>
     <string name="milink_allow_camera_devices">Force support for camera streaming</string>
     <string name="milink_fuck_hpplay">Block generate of hpplay folders</string>
+    <string name="milink_notification_discovery_compatibility">Notification device discovery compatibility</string>
+    <string name="milink_notification_discovery_compatibility_desc">Bypass Cast bit check during local device discovery to improve compatibility</string>
+    <string name="milink_notification_click_flow">Notification click flow</string>
+    <string name="milink_notification_click_flow_desc">Convert notification click into native PIN_APP transaction for cross-device flow</string>
     <!--Sound Recorder-->
     <string name="sound_recorder">Sound Recorder</string>
     <string name="sound_recorder_disable_ai_watermark">Disable AI watermark</string>
