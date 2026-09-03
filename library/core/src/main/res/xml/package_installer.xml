@@ -21,11 +21,6 @@
     app:myLocation="@string/package_installer"
     app:quick_restart="com.miui.packageinstaller">
     <PreferenceCategory>
-        <SwitchPreference
-            android:key="prefs_key_miui_package_installer_modify"
-            android:title="@string/miui_package_installer_modify"
-            android:defaultValue="false"
-            app:isPreferenceVisible="false" />
 
         <SwitchPreference
             android:key="prefs_key_miui_package_installer_disable_ad"
@@ -37,11 +32,6 @@
             android:title="@string/miui_package_installer_install_risk"
             android:defaultValue="false" />
 
-        <SwitchPreference
-            android:key="prefs_key_miui_package_installer_disable_cloud_check"
-            android:title="@string/miui_package_installer_disable_cloud_check"
-            android:summary="@string/miui_package_installer_disable_cloud_check_desc"
-            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="prefs_key_miui_package_installer_safe_model_tip"
@@ -53,11 +43,6 @@
             android:title="@string/miui_package_installer_count_checking"
             android:defaultValue="false" />
 
-        <SwitchPreference
-            android:key="prefs_key_miui_package_installer_apk_info"
-            android:title="@string/miui_package_installer_apk_info"
-            android:summary="@string/miui_package_installer_apk_info_desc"
-            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="prefs_key_miui_package_installer_update_system_app"
@@ -65,11 +50,6 @@
             android:summary="@string/miui_package_installer_update_system_app_desc"
             android:defaultValue="false" />
 
-        <SwitchPreference
-            android:key="prefs_key_miui_package_installer_upload_appinfo"
-            android:title="@string/miui_package_installer_upload_appinfo"
-            android:summary="@string/miui_package_installer_upload_appinfo_desc"
-            android:defaultValue="false" />
 
         <EditTextPreference
             android:title="@string/miui_package_installer_install_source"

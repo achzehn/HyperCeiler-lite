@@ -1766,14 +1766,21 @@
     <string name="browser_hide_homepage_top_bar_summary">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
     <string name="browser_block_dialog">屏蔽营销弹窗</string>
     <string name="browser_block_dialog_summary">阻止各种推广弹窗弹出，如小组件推荐对话框</string>
-    <string name="browser_search_engine">增加搜索引擎</string>
-    <string name="browser_search_engine_summary">添加必应搜索引擎</string>
+    <string name="browser_block_ads">去广告</string>
+    <string name="browser_block_ads_summary">屏蔽下载弹窗游戏推广、搜索建议应用广告等信息流推广内容</string>
+    <string name="browser_search_engine">搜索引擎配置注入</string>
+    <string name="browser_search_engine_summary">将浏览器 searchEngines 配置注入为内置引擎，下方自定义项为可选覆盖</string>
+    <string name="browser_search_engine_name">覆盖引擎标识</string>
+    <string name="browser_search_engine_label">覆盖显示名</string>
+    <string name="browser_search_engine_url">覆盖搜索链接</string>
+    <string name="browser_search_engine_url_summary">搜索词以 {searchTerms} 占位，与默认值相同视为未覆盖</string>
+    <string name="browser_search_engine_icon">覆盖图标链接</string>
 
     <!-- QuickSearchBox -->
     <string name="quicksearchbox">搜索</string>
     <string name="quicksearchbox_settings">搜索设置</string>
-    <string name="quicksearchbox_search_engine">增加搜索引擎</string>
-    <string name="quicksearchbox_search_engine_summary">添加必应搜索引擎</string>
+    <string name="quicksearchbox_search_engine">同步搜索引擎配置</string>
+    <string name="quicksearchbox_search_engine_summary">将内置 searchEngines 引擎配置注入快速搜索，与浏览器共用同一份配置</string>
 
     <!-- Bilibili -->
     <string name="bilibili">哔哩哔哩</string>
@@ -1785,4 +1792,10 @@
     <string name="bilibili_live_invisible_summary">在哔哩哔哩直播间隐身观看，隐藏进场通知和心跳</string>
     <string name="bilibili_remove_block">解除限制</string>
     <string name="bilibili_remove_block_summary">绕过用户封禁状态检查和漫游功能限制</string>
+
+    <!-- Hongguo -->
+    <string name="hongguo">红果短剧</string>
+    <string name="hongguo_settings">红果短剧设置</string>
+    <string name="hongguo_enable">启用红果增强</string>
+    <string name="hongguo_enable_summary">为红果短剧应用安装功能 Hook。启用后，请通过红果应用内设置页入口或通知栏快捷菜单打开模块面板配置各子功能</string>
 </resources>

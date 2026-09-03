@@ -5,6 +5,7 @@ package com.sevtinge.hyperceiler.libhook.app.Browser;
 
 import com.hchen.database.HookBase;
 import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
+import com.sevtinge.hyperceiler.libhook.rules.browser.BlockAds;
 import com.sevtinge.hyperceiler.libhook.rules.browser.BlockDialog;
 import com.sevtinge.hyperceiler.libhook.rules.browser.Configuration;
 import com.sevtinge.hyperceiler.libhook.rules.browser.DisableUpdateCheck;
@@ -23,5 +24,6 @@ public class Browser extends BaseLoad {
         initHook(new HideHomepageTopBar(), PrefsBridge.getBoolean("browser_hide_homepage_top_bar"));
         initHook(new BlockDialog(), PrefsBridge.getBoolean("browser_block_dialog"));
         initHook(new BrowserSearchEngine(), PrefsBridge.getBoolean("browser_search_engine"));
+        initHook(new BlockAds(), PrefsBridge.getBoolean("browser_block_ads"));
     }
 }

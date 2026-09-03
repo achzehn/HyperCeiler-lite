@@ -26,7 +26,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.sevtinge.hyperceiler.provision.IAnimCallback;

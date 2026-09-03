@@ -20,72 +20,27 @@
 package com.sevtinge.hyperceiler.libhook.rules.securitycenter.other;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 
-import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.libhook.base.BaseHook;
 import com.sevtinge.hyperceiler.libhook.callback.IMethodHook;
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.dexkit.IDexKit;
-
-import org.luckypray.dexkit.DexKitBridge;
-import org.luckypray.dexkit.query.FindClass;
-import org.luckypray.dexkit.query.FindMethod;
-import org.luckypray.dexkit.query.matchers.ClassMatcher;
-import org.luckypray.dexkit.query.matchers.MethodMatcher;
-import org.luckypray.dexkit.result.MethodData;
-import org.luckypray.dexkit.result.base.BaseData;
-
-import java.lang.reflect.Method;
 
 import io.github.kyuubiran.ezxhelper.xposed.common.HookParam;
 
 public class SkipCountDownLimit extends BaseHook {
-    private Method mSkipCountDownLimitMethod;
-
-    @Override
-    protected boolean useDexKit() {
-        return true;
-    }
-
-    @Override
-    protected boolean initDexKit() {
-        mSkipCountDownLimitMethod = requiredMember("SkipCountDownLimitFragment", new IDexKit() {
-            @Override
-            public BaseData dexkit(DexKitBridge bridge) throws ReflectiveOperationException {
-                MethodData methodData = bridge.findClass(FindClass.create()
-                    .matcher(ClassMatcher.create().className("com.miui.permcenter.privacymanager.InterceptBaseFragment"))
-                ).findMethod(FindMethod.create()
-                    .matcher(MethodMatcher.create().usingNumbers(-1, 0))
-                ).singleOrNull();
-                return methodData;
-            }
-        });
-        return true;
-    }
 
     @Override
     public void init() {
-        if (PrefsBridge.getBoolean("security_center_skip_count_down_limit_direct")){
-            findAndHookMethod("com.miui.permcenter.privacymanager.InterceptBaseFragment", "onInflateView", LayoutInflater.class, ViewGroup.class, Bundle.class, new IMethodHook() {
-                @Override
-                public void after(HookParam param) {
-                    callMethod(param.getThisObject(), mSkipCountDownLimitMethod.getName(), true);
+        findAndHookMethod("com.miui.permcenter.privacymanager.model.InterceptBaseActivity", "onCreate", Bundle.class, new IMethodHook() {
+            @Override
+            public void before(HookParam param) {
+                Bundle bundle = (Bundle) param.getArgs()[0];
+                if (bundle == null) {
+                    bundle = new Bundle();
+                    param.getArgs()[0] = bundle;
                 }
-            });
-        } else {
-            findAndHookMethod("com.miui.permcenter.privacymanager.model.InterceptBaseActivity", "onCreate", Bundle.class, new IMethodHook() {
-                @Override
-                public void before(HookParam param) {
-                    Bundle bundle = (Bundle) param.getArgs()[0];
-                    if (bundle == null) {
-                        bundle = new Bundle();
-                        param.getArgs()[0] = bundle;
-                    }
-                    bundle.putInt("KET_STEP_COUNT", 0);
-                    bundle.putBoolean("KEY_ALLOW_ENABLE", true);
-                }
-            });
-        }
+                bundle.putInt("KET_STEP_COUNT", 0);
+                bundle.putBoolean("KEY_ALLOW_ENABLE", true);
+            }
+        });
     }
 }

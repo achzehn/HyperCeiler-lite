@@ -28,7 +28,7 @@ public class QuickSearchBox extends BaseLoad {
 
     @Override
     public void onPackageLoaded() {
-        // 搜索应用搜索引擎（必应搜索）
+        // 同步浏览器搜索引擎
         initHook(new QuickSearchBoxSearchEngine(), PrefsBridge.getBoolean("quicksearchbox_search_engine"));
     }
 }

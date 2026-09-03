@@ -164,6 +164,14 @@ public class Configuration extends BaseHook {
 
     @Override
     public void init() {
+        android.util.Log.i("BrowserAdsD", "Configuration targets: sugSwitch=" + (mPrefShowSugSwitchViewMethod != null)
+            + " recPopup=" + (mRecPopupCardSwitchMethod != null)
+            + " pushPop=" + (mPrefPushPopDialogMethod != null)
+            + " hotSpot=" + (mDefaultPageRealTimeHotSpotSwitchMethod != null)
+            + " guessYouWant=" + (mDefaultPageGuessYouWantSwitchMethod != null)
+            + " adExit=" + (mAdAppDownloadExitSwitchMethod != null)
+            + " adPush=" + (mAdAppDownloadPushSwitchMethod != null)
+            + " adHome=" + (mAdAppDownloadHomeSwitchMethod != null));
         if (mPrefShowSugSwitchViewMethod != null) {
             hookMethod(mPrefShowSugSwitchViewMethod, new IMethodHook() {
                 @Override

@@ -201,12 +201,12 @@
     <string name="browser_hide_homepage_top_bar_summary">隐藏浏览器首页顶部栏</string>
     <string name="browser_block_dialog">阻止弹窗</string>
     <string name="browser_block_dialog_summary">阻止浏览器弹窗对话框</string>
-    <string name="browser_search_engine">替换为必应搜索引擎</string>
-    <string name="browser_search_engine_summary">将浏览器搜索引擎替换为必应</string>
+    <string name="browser_search_engine">搜索引擎配置注入</string>
+    <string name="browser_search_engine_summary">将浏览器 searchEngines 配置注入为内置引擎，下方自定义项为可选覆盖</string>
 
     <!-- QuickSearchBox -->
     <string name="quicksearchbox">搜索</string>
     <string name="quicksearchbox_settings">搜索设置</string>
-    <string name="quicksearchbox_search_engine">替换为必应搜索引擎</string>
-    <string name="quicksearchbox_search_engine_summary">将系统搜索应用的搜索引擎替换为必应</string>
+    <string name="quicksearchbox_search_engine">同步搜索引擎配置</string>
+    <string name="quicksearchbox_search_engine_summary">将内置 searchEngines 引擎配置注入快速搜索，与浏览器共用同一份配置</string>
 </resources>

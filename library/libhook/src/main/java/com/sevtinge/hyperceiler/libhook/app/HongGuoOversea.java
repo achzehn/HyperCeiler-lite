@@ -16,19 +16,22 @@
  *
  * Copyright (C) 2023-2026 HyperCeiler Contributions
  */
-package com.sevtinge.hyperceiler.hooker.framework;
+package com.sevtinge.hyperceiler.libhook.app;
 
-import com.sevtinge.hyperceiler.core.R;
-import com.sevtinge.hyperceiler.dashboard.DashboardFragment;
+import com.hchen.database.HookBase;
+import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
+import com.sevtinge.hyperceiler.libhook.base.BaseLoad;
+import com.sevtinge.hyperceiler.libhook.rules.hongguo.HongGuoHooks;
 
-public class OtherSettings extends DashboardFragment {
+/**
+ * 红果短剧（海外版）综合增强。
+ * 详细子功能开关位于宿主应用内模块面板。
+ */
+@HookBase(targetPackage = "com.phoenix.read.oversea.gp")
+public class HongGuoOversea extends BaseLoad {
 
     @Override
-    public int getPreferenceScreenResId() {
-        return R.xml.framework_other;
-    }
-
-    @Override
-    public void initPrefs() {
+    public void onPackageLoaded() {
+        initHook(new HongGuoHooks(), PrefsBridge.getBoolean("hongguo_enable"));
     }
 }

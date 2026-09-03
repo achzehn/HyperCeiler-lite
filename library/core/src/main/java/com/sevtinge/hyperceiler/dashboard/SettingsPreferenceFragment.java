@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sevtinge.hyperceiler.common.base.BasePreferenceFragment;
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.core.R;
-import com.sevtinge.hyperceiler.utils.PersistConfig;
 
 public abstract class SettingsPreferenceFragment extends BasePreferenceFragment {
 

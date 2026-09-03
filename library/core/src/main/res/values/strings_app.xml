@@ -1807,14 +1807,21 @@
     <string name="browser_hide_homepage_top_bar_summary">Hide top bar on simplified homepage</string>
     <string name="browser_block_dialog">Block marketing dialogs</string>
     <string name="browser_block_dialog_summary">Block various promotion pop-ups</string>
-    <string name="browser_search_engine">Add search engine</string>
-    <string name="browser_search_engine_summary">Add Bing search engine</string>
+    <string name="browser_block_ads">Block ads</string>
+    <string name="browser_block_ads_summary">Block download dialog game promos, search suggestion app ads and other feed promotions</string>
+    <string name="browser_search_engine">Search engine config injection</string>
+    <string name="browser_search_engine_summary">Inject the built-in searchEngines config into the browser, custom fields below act as optional overrides</string>
+    <string name="browser_search_engine_name">Override engine key</string>
+    <string name="browser_search_engine_label">Override display name</string>
+    <string name="browser_search_engine_url">Override search URL</string>
+    <string name="browser_search_engine_url_summary">Use {searchTerms} as the query placeholder, same as default means no override</string>
+    <string name="browser_search_engine_icon">Override icon URL</string>
 
     <!-- QuickSearchBox -->
     <string name="quicksearchbox">Search</string>
     <string name="quicksearchbox_settings">Search Settings</string>
-    <string name="quicksearchbox_search_engine">Add search engine</string>
-    <string name="quicksearchbox_search_engine_summary">Add Bing search engine</string>
+    <string name="quicksearchbox_search_engine">Sync search engine config</string>
+    <string name="quicksearchbox_search_engine_summary">Inject the built-in searchEngines config into QuickSearchBox, shared with the browser</string>
 
     <!-- Bilibili -->
     <string name="bilibili">Bilibili</string>
@@ -1826,4 +1833,10 @@
     <string name="bilibili_live_invisible_summary">Watch Bilibili live streams invisibly, hide entry notifications and heartbeat</string>
     <string name="bilibili_remove_block">Remove restrictions</string>
     <string name="bilibili_remove_block_summary">Bypass user block status checks and roaming restrictions</string>
+
+    <!-- Hongguo -->
+    <string name="hongguo">Hongguo</string>
+    <string name="hongguo_settings">Hongguo Settings</string>
+    <string name="hongguo_enable">Enable Hongguo enhancements</string>
+    <string name="hongguo_enable_summary">Install hooks for the Hongguo short-drama app. After enabling, configure detailed switches via the built-in panel inside the app (Hongguo native settings page entry or notification quick menu)</string>
 </resources>

@@ -21,89 +21,18 @@
     app:myLocation="@string/security_center_newbox_title"
     app:quick_restart="com.miui.securitycenter">
     <PreferenceCategory android:title="@string/various_location_simulation_all_title">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_hide_sidebar"
-            android:title="@string/security_center_hide_sidebar" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="prefs_key_security_center_hide_sidebar"
-            android:key="prefs_key_security_center_leave_open"
-            android:title="@string/security_center_leave_open" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="prefs_key_security_center_sidebar_line_color"
-            android:title="@string/security_center_sidebar_line_color" />
 
-        <ColorPickerPreference
-            android:defaultValue="-1294740525"
-            android:dependency="prefs_key_security_center_sidebar_line_color"
-            android:key="prefs_key_security_center_sidebar_line_color_default"
-            android:title="@string/security_center_sidebar_line_color_default" />
 
-        <ColorPickerPreference
-            android:defaultValue="-6842473"
-            android:dependency="prefs_key_security_center_sidebar_line_color"
-            android:key="prefs_key_security_center_sidebar_line_color_dark"
-            android:title="@string/security_center_sidebar_line_color_dark" />
 
-        <ColorPickerPreference
-            android:defaultValue="-872415232"
-            android:dependency="prefs_key_security_center_sidebar_line_color"
-            android:key="prefs_key_security_center_sidebar_line_color_light"
-            android:title="@string/security_center_sidebar_line_color_light" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_se_enable"
-            android:title="@string/security_center_blur_model" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_blur_model_super"
-            android:dependency="prefs_key_se_enable"
-            android:disableDependentsState="true"
-            android:title="@string/use_hyper_blur" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="prefs_key_se_enable"
-            android:key="prefs_key_security_center_invert_color"
-            android:summary="@string/security_center_invert_color_summary"
-            android:title="@string/security_center_invert_color" />
 
-        <SeekBarPreferenceCompat
-            app:defaultValue="60"
-            android:dependency="prefs_key_security_center_blur_model_super"
-            android:key="prefs_key_security_center_blurradius"
-            android:title="@string/security_center_blurradius"
-            app:defaultValueTitle="@string/array_default"
-            app:format="%s %%"
-            app:maxValue="99"
-            app:minValue="30"
-            app:stepValue="1" />
 
-        <ColorPickerPreference
-            android:defaultValue="-1"
-            android:dependency="prefs_key_se_enable"
-            android:key="prefs_key_security_center_color"
-            android:title="@string/security_center_color" />
 
-        <fan.preference.DropDownPreference
-            android:defaultValue="0"
-            android:key="prefs_key_security_center_sidebar_show_suggest"
-            android:title="@string/security_center_sidebar_show_suggest"
-            app:entries="@array/security_center_suggest"
-            app:entryValues="@array/security_center_suggest_value"
-            app:isPreferenceVisible="false" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_disable_security_center_sidebar_show_suggest"
-            android:title="@string/security_center_sidebar_show_suggest" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -112,15 +41,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/security_center_sidebar_videobox_title">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_unlock_new_vb"
-            android:title="@string/security_center_unlock_new_vb" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_dolby_open"
-            android:title="@string/security_center_dolby_open" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -139,26 +60,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/security_center_sidebar_gamebox_title">
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_game_performance_wild_mode"
-            android:title="@string/security_center_game_performance_wild_mode" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_remove_macro_black_list"
-            android:title="@string/security_center_remove_macro_black_list" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_unlock_gun_service"
-            android:title="@string/security_center_unlock_gun_service" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="prefs_key_security_center_remove_game_toast"
-            android:title="@string/security_center_remove_game_toast" />
-
-    </PreferenceCategory>
 </PreferenceScreen>

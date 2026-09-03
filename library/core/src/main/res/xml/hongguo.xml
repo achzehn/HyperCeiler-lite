@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:quick_restart="com.phoenix.read">
+
+    <PreferenceCategory android:title="@string/hongguo_settings">
+
+        <SwitchPreference
+            android:key="hongguo_enable"
+            android:title="@string/hongguo_enable"
+            android:summary="@string/hongguo_enable_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -20,33 +20,15 @@
 <resources>
     <string-array name="xposed_scope">
         <item>android</item> <!--系统框架-->
-        <item>com.android.externalstorage</item> <!--外部存储设备-->
-        <item>com.android.htmlviewer</item> <!--HTML 查看器-->
-        <item>com.android.mms</item> <!--短信-->
-        <item>com.android.providers.downloads</item> <!--下载管理程序-->
-        <item>com.android.settings</item> <!--设置-->
-        <item>com.android.systemui</item> <!--系统界面-->
-        <item>com.android.updater</item> <!--系统更新-->
-        <item>com.lbe.security.miui</item> <!--权限管理服务-->
-        <item>com.milink.service</item> <!--互联互通服务-->
-        <item>com.miui.analytics</item> <!--Analytics-->
+        <item>com.android.browser</item> <!--浏览器-->
+        <item>com.android.quicksearchbox</item> <!--搜索-->
         <item>com.miui.backup</item> <!--备份-->
-        <item>com.miui.guardprovider</item> <!--系统安全组件-->
-        <item>com.miui.home</item> <!--系统桌面-->
-        <item>com.miui.huanji</item> <!--小米换机-->
-        <item>com.miui.mediaeditor</item> <!--小米相册-编辑-->
         <item>com.miui.packageinstaller</item> <!--应用包管理组件-->
-        <item>com.miui.phrase</item> <!--剪贴板与常用语-->
-        <item>com.miui.screenrecorder</item> <!--屏幕录制-->
-        <item>com.miui.screenshot</item> <!--截屏-->
         <item>com.miui.securitycenter</item> <!--安全服务-->
-        <item>com.sohu.inputmethod.sogou.xiaomi</item> <!--搜狗输入法小米版-->
         <item>com.xiaomi.barrage</item> <!--弹幕通知-->
-        <item>com.xiaomi.joyose</item> <!--Joyose-->
         <item>com.xiaomi.market</item> <!--应用商店-->
         <item>com.xiaomi.trustservice</item> <!--MiTrustService-->
         <item>com.xiaomi.xmsf</item> <!--小米服务框架-->
-        <item>miui.systemui.plugin</item> <!--系统界面组件-->
         <item>tv.danmaku.bili</item> <!--哔哩哔哩-->
         <item>com.bilibili.app.blue</item> <!--哔哩哔哩蓝版-->
         <item>com.bilibili.app.in</item> <!--哔哩哔哩国际版-->

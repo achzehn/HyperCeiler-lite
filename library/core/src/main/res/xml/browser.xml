@@ -36,9 +36,40 @@
             app:iconSpaceReserved="false"/>
 
         <SwitchPreference
+            android:key="browser_block_ads"
+            android:title="@string/browser_block_ads"
+            android:summary="@string/browser_block_ads_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
             android:key="browser_search_engine"
             android:title="@string/browser_search_engine"
             android:summary="@string/browser_search_engine_summary"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            android:key="browser_search_engine_name"
+            android:title="@string/browser_search_engine_name"
+            android:defaultValue="bing"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            android:key="browser_search_engine_label"
+            android:title="@string/browser_search_engine_label"
+            android:defaultValue="必应"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            android:key="browser_search_engine_url"
+            android:title="@string/browser_search_engine_url"
+            android:summary="@string/browser_search_engine_url_summary"
+            android:defaultValue="https://www.bing.com/search?q={searchTerms}"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            android:key="browser_search_engine_icon"
+            android:title="@string/browser_search_engine_icon"
+            android:defaultValue="https://www.bing.com/favicon.ico"
             app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>

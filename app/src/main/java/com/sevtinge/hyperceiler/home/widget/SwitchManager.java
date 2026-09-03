@@ -1,26 +1,15 @@
 package com.sevtinge.hyperceiler.home.widget;
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.sevtinge.hyperceiler.R;
 
-import fan.cardview.HyperCardView;
-import fan.core.utils.HyperMaterialUtils;
-import fan.core.utils.MaterialDayNightConfig;
-import fan.core.utils.RomUtils;
-import fan.theme.token.BloomStrokeToken;
-import fan.theme.token.ColorBlendToken;
-import fan.theme.token.MaterialDayNightToken;
-import fan.theme.token.MaterialToken;
-import fan.theme.token.hypermaterial.Mask;
 
 import android.content.Context;
 import android.view.View;

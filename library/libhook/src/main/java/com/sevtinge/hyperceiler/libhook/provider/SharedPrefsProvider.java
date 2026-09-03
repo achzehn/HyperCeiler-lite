@@ -27,10 +27,13 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.AppsTool;
@@ -44,6 +47,10 @@ import java.util.Set;
 public class SharedPrefsProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.sevtinge.hyperceiler.provider.sharedprefs";
+    /** 浏览器 → 快速搜索引擎同步写入方法名（call() 通道） */
+    public static final String METHOD_ENGINE_SYNC = "engine_sync";
+    /** 引擎同步 JSON 载荷 key */
+    public static final String EXTRA_ENGINE_JSON = "engine_json";
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     SharedPreferences prefs;
@@ -180,6 +187,25 @@ public class SharedPrefsProvider extends ContentProvider {
             return new AssetFileDescriptor(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY), 0, AssetFileDescriptor.UNKNOWN_LENGTH);
         }
 
+        return null;
+    }
+
+    @Override
+    public Bundle call(@NonNull String method, @Nullable String arg, @Nullable Bundle extras) {
+        // 引擎同步中转：浏览器 hook 进程无法写远程 prefs（libxposed 只读），
+        // 由本 Provider 在模块 App 进程内代写（putByApp 同步到远程，QSB hook 读取）
+        if (METHOD_ENGINE_SYNC.equals(method) && extras != null) {
+            String json = extras.getString(EXTRA_ENGINE_JSON);
+            if (!TextUtils.isEmpty(json)) {
+                try {
+                    PrefsBridge.putString(
+                        com.sevtinge.hyperceiler.libhook.rules.searchengine.SearchEngineSync.PREF_CURRENT_ENGINE_JSON,
+                        json);
+                } catch (Throwable t) {
+                    Log.w("SharedPrefsProvider", "engine sync write failed", t);
+                }
+            }
+        }
         return null;
     }
 

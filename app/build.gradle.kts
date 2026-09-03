@@ -49,7 +49,7 @@ android {
         minSdk = 35
         targetSdk = 37
         versionCode = gitVersionCode
-        versionName = "2.10.166"
+        versionName = "ac21.10.166"
 
         val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
             timeZone = TimeZone.getTimeZone("Asia/Shanghai")
@@ -93,10 +93,13 @@ android {
     }
 
     val properties: Properties? = loadPropertiesFromFile("signing.properties")
+    // 相对路径基于项目根目录解析（与 signing.properties 注释一致）
     fun getString(propertyName: String, environmentName: String, prompt: String): String =
         properties?.getProperty(propertyName)
             ?: System.getenv(environmentName)
             ?: System.console()?.readLine("\n$prompt: ").orEmpty()
+
+    fun resolveStoreFile(path: String) = rootProject.file(path)
 
     val buildTimeSuffix: String by lazy {
         SimpleDateFormat("MMddHHmm").apply {
@@ -110,7 +113,7 @@ android {
     signingConfigs {
         create("hasProperties") {
             if (properties != null) {
-                storeFile = file(getString("storeFile", "STORE_FILE", "Store file"))
+                storeFile = resolveStoreFile(getString("storeFile", "STORE_FILE", "Store file"))
                 storePassword = getString("storePassword", "STORE_PASSWORD", "Store password")
                 keyAlias = getString("keyAlias", "KEY_ALIAS", "Key alias")
                 keyPassword = getString("keyPassword", "KEY_PASSWORD", "Key password")

@@ -214,12 +214,12 @@
     <string name="browser_hide_homepage_top_bar_summary">Hide the top bar on homepage</string>
     <string name="browser_block_dialog">Block dialog</string>
     <string name="browser_block_dialog_summary">Block pop-up dialogs</string>
-    <string name="browser_search_engine">Replace with Bing</string>
-    <string name="browser_search_engine_summary">Replace browser search engine with Bing</string>
+    <string name="browser_search_engine">Search engine config injection</string>
+    <string name="browser_search_engine_summary">Inject the built-in searchEngines config into the browser, custom fields below act as optional overrides</string>
 
     <!-- QuickSearchBox -->
     <string name="quicksearchbox">Search</string>
     <string name="quicksearchbox_settings">Search Settings</string>
-    <string name="quicksearchbox_search_engine">Replace with Bing</string>
-    <string name="quicksearchbox_search_engine_summary">Replace system search engine with Bing</string>
+    <string name="quicksearchbox_search_engine">Sync search engine config</string>
+    <string name="quicksearchbox_search_engine_summary">Inject the built-in searchEngines config into QuickSearchBox, shared with the browser</string>
 </resources>

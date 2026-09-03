@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import fan.bottomsheet.BottomSheetBehavior;
 import fan.bottomsheet.BottomSheetModal;
 
 public class WebFragment extends Fragment {
