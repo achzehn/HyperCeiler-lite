@@ -49,8 +49,14 @@ import io.github.kyuubiran.ezxhelper.xposed.common.HookParam;
  * <li>引擎条目类 h 为 10 参构造：(name, channelNo, showIcon, searchUrl,
  * iconUrl, title_zh_CN, title_zh_TW, title_en_US, title_bo_CN, title_ug_CN)。
  * </ul>
- * Pad 端最终指向 com.android.quicksearchbox.xiaomi.SearchEngineDataProvider，
- * 13 参 SearchEngineItem 构造（key/searchUriDefault/icon/title_zh_CN...）。
+ * Pad 端（10.0.0.96 反编译确认）最终指向
+ * com.android.quicksearchbox.xiaomi.SearchEngineDataProvider，13 参
+ * SearchEngineItem 构造（title_zh_CN/key/searchUriDefault/searchUri/extra/icon/
+ * iconHash/queryParameterKey/label/isDefault/isRecommended/localOpen/desktop）；
+ * 引擎装配链路为 SearchEngineHelper.updateEngines（key 为条目 label，写入
+ * searchEngine.xml 的 current_engine）。宿主 SearchEngineHelper 硬编码黑名单
+ * {"bing"} 且 needFilter() 多数情况为 true，label 恰为 "bing" 的引擎会被直接
+ * 过滤导致回落百度 —— 本 hook 拦截 needFilter() 恒返回 false 以保证两端引擎一致。
  */
 public class QuickSearchBoxSearchEngine extends BaseHook {
 
@@ -61,6 +67,8 @@ public class QuickSearchBoxSearchEngine extends BaseHook {
     private static final String PAD_ENGINE_ITEM_CLASS = PAD_PROVIDER_CLASS + "$SearchEngineItem";
     private static final String PAD_SEARCH_URI_CLASS = PAD_PROVIDER_CLASS + "$SearchUri";
     private static final String PAD_DESKTOP_CLASS = PAD_PROVIDER_CLASS + "$Desktop";
+    /** Pad 端引擎装配管理器（updateEngines 构建引擎集，内含 bing 黑名单） */
+    private static final String PAD_SEARCH_HELPER_CLASS = "com.android.quicksearchbox.SearchEngineHelper";
 
     // 手机端：引擎条目 h（10 参构造）与引擎管理单例 f（f.b(context).k(name) 切换引擎）
     private static final String PHONE_ENGINE_CLASS = "com.android.quicksearchbox.xiaomi.searchengine.h";
@@ -187,6 +195,26 @@ public class QuickSearchBoxSearchEngine extends BaseHook {
             XposedLog.i(TAG, "Hooked Pad SearchBox getSearchEngines()");
         } catch (Exception e) {
             XposedLog.e(TAG, "Failed to hook Pad SearchBox getSearchEngines", e);
+        }
+
+        // 绕过宿主引擎黑名单（SearchEngineHelper.sBlackList 硬编码 "bing"，
+        // needFilter() 为 true 时 label=="bing" 的引擎在 updateEngines 中被剔除，
+        // 导致同步引擎丢失并回落百度）：恒返回 false 保证两端搜索引擎一致。
+        try {
+            Class<?> helperClass = findClassIfExists(PAD_SEARCH_HELPER_CLASS);
+            if (helperClass == null) {
+                XposedLog.w(TAG, "Pad SearchEngineHelper not found, blacklist filter stays");
+            } else {
+                hookAllMethods(helperClass, "needFilter", new IMethodHook() {
+                    @Override
+                    public void after(HookParam param) {
+                        param.setResult(false);
+                    }
+                });
+                XposedLog.i(TAG, "Hooked Pad SearchEngineHelper.needFilter -> false");
+            }
+        } catch (Exception e) {
+            XposedLog.w(TAG, "Failed to hook Pad SearchEngineHelper.needFilter", e);
         }
         return true;
     }

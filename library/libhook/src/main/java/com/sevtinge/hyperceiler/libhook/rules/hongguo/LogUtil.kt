@@ -107,9 +107,6 @@ object LogUtil {
         try { writer?.flush() } catch (_: Exception) {}
     }
 
-    @Synchronized
-    fun getFilePath(): String = logFile?.absolutePath ?: "(未初始化)"
-
     private fun cleanupExpiredLogs(dir: File): Int {
         val now = System.currentTimeMillis()
         var deleted = 0

@@ -16,21 +16,9 @@ import io.github.kyuubiran.ezxhelper.xposed.common.HookParam;
 
 public class DisableKeepScreenOn extends BaseHook {
 
-    // 临时诊断日志开关（验证通过后移除）
-    private static final boolean DEBUG = true;
-    private static final String DTAG = "KSODebug";
-    private static final java.util.concurrent.atomic.AtomicInteger sClearedCount =
-        new java.util.concurrent.atomic.AtomicInteger();
-
-    private static void dlog(String msg) {
-        if (DEBUG) {
-            android.util.Log.i(DTAG, msg);
-        }
-    }
-
     @Override
     public void init() {
-        dlog("init called, isSystemServer=" + BaseLoad.isSystemServer());
+        // 应用侧 Hook（若本 Hook 被应用加载器注册时生效）
         // Hook Window.setFlags: 清除 FLAG_KEEP_SCREEN_ON 标志位
         try {
             findAndHookMethod("android.view.Window", "setFlags", int.class, int.class,
@@ -96,7 +84,7 @@ public class DisableKeepScreenOn extends BaseHook {
             // 不同 Android 版本方法签名可能不同
         }
 
-        // 系统侧（system_server）：解除窗口安全锁定，与参考项目保持一致
+        // 系统侧（system_server）：主生效路径
         if (BaseLoad.isSystemServer()) {
             try {
                 findAndHookMethod("com.android.server.wm.WindowState", "isSecureLocked",
@@ -134,14 +122,7 @@ public class DisableKeepScreenOn extends BaseHook {
                     for (Object arg : param.getArgs()) {
                         if (arg instanceof WindowManager.LayoutParams) {
                             WindowManager.LayoutParams lp = (WindowManager.LayoutParams) arg;
-                            if ((lp.flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0) {
-                                lp.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                                int n = sClearedCount.incrementAndGet();
-                                if (n <= 10) {
-                                    dlog("cleared KEEP_SCREEN_ON from attrs, count=" + n
-                                        + ", pkg=" + lp.packageName);
-                                }
-                            }
+                            lp.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                         }
                     }
                 }
@@ -149,22 +130,16 @@ public class DisableKeepScreenOn extends BaseHook {
 
             // addWindow：窗口首次注册
             try {
-                java.util.List<io.github.libxposed.api.XposedInterface.HookHandle> h1 =
-                    hookAllMethods("com.android.server.wm.WindowManagerService", "addWindow", clearKeepScreenOn);
-                dlog("addWindow hooked=" + h1.size());
+                hookAllMethods("com.android.server.wm.WindowManagerService", "addWindow", clearKeepScreenOn);
             } catch (Throwable t) {
                 XposedLog.w(TAG, "system", "DisableKeepScreenOn: hook WMS.addWindow failed", t);
-                dlog("addWindow hook FAILED: " + t);
             }
 
             // relayoutWindow：窗口属性更新（应用每次 relayout 都会把客户端 attrs 同步到 WindowState）
             try {
-                java.util.List<io.github.libxposed.api.XposedInterface.HookHandle> h2 =
-                    hookAllMethods("com.android.server.wm.WindowManagerService", "relayoutWindow", clearKeepScreenOn);
-                dlog("relayoutWindow hooked=" + h2.size());
+                hookAllMethods("com.android.server.wm.WindowManagerService", "relayoutWindow", clearKeepScreenOn);
             } catch (Throwable t) {
                 XposedLog.w(TAG, "system", "DisableKeepScreenOn: hook WMS.relayoutWindow failed", t);
-                dlog("relayoutWindow hook FAILED: " + t);
             }
         }
     }

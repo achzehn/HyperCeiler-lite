@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
@@ -46,6 +47,11 @@ object Hooks {
     private var gVipOn = false
     private var gVipIconOn = false
     private var gMaxQualityOn = false
+
+    // 记录模块施加过隐藏的窗口，恢复时只对这些窗口操作（"谁隐藏的谁恢复"），
+    // 避免在功能未开启时破坏宿主全屏页自身的状态栏/导航栏管理
+    private val gTopAppliedActs = java.util.Collections.synchronizedMap(java.util.WeakHashMap<Activity, Boolean>())
+    private val gNavAppliedActs = java.util.Collections.synchronizedMap(java.util.WeakHashMap<Activity, Boolean>())
 
     private var gDefaultSpeedOn = false
     private var gDefaultSpeed = 1.0f
@@ -949,153 +955,6 @@ object Hooks {
 
     private fun isNear(value: Int, target: Int, tolerance: Int): Boolean =
         kotlin.math.abs(value - target) <= tolerance
-
-    private fun reclaimBottomSpaceFromAr9(marker: View) {
-        if (!gMasterOn || !gControlOn || (gRestoreControlsOnPause && gVideoPaused)) return
-        try {
-            val dm = marker.resources.displayMetrics
-            val density = dm.density.coerceAtLeast(0.1f)
-            val markerLoc = IntArray(2)
-            marker.getLocationOnScreen(markerLoc)
-            val markerTop = markerLoc[1]
-            val markerHeight = (if (marker.height > 0) marker.height else marker.measuredHeight).coerceAtLeast(1)
-            val tol = (12f * density).toInt().coerceAtLeast(8)
-            val minLargeHeight = (dm.heightPixels * 0.28f).toInt()
-
-            val anchorIds = linkedSetOf<Int>()
-            var idNode: View? = marker
-            var idDepth = 0
-            while (idNode != null && idDepth++ < 8) {
-                if (idNode.id > 0) anchorIds.add(idNode.id)
-                idNode = idNode.parent as? View
-            }
-
-            fun reclaimLargeBranch(root: View?, depth: Int = 0) {
-                if (root == null || depth > 4) return
-                try {
-                    val w = if (root.width > 0) root.width else root.measuredWidth
-                    val h = if (root.height > 0) root.height else root.measuredHeight
-                    if (w > 0 && h > minLargeHeight &&
-                        w.toFloat() / dm.widthPixels.coerceAtLeast(1).toFloat() >= 0.82f) {
-                        val lp = root.layoutParams
-                        val mlp = lp as? ViewGroup.MarginLayoutParams
-                        val bottomMargin = mlp?.bottomMargin ?: 0
-                        val padBottom = root.paddingBottom
-                        val barLikeMin = (markerHeight * 0.55f).toInt()
-                        val barLikeMax = (markerHeight * 1.75f).toInt()
-                        var changed = false
-                        if (padBottom in barLikeMin..barLikeMax && padBottom > 0) {
-                            rememberBottomLayoutState(root)
-                            root.setPadding(root.paddingLeft, root.paddingTop, root.paddingRight, 0)
-                            changed = true
-                        }
-                        if (mlp != null && bottomMargin in barLikeMin..barLikeMax && bottomMargin > 0) {
-                            rememberBottomLayoutState(root)
-                            mlp.bottomMargin = 0
-                            root.layoutParams = mlp
-                            changed = true
-                        }
-                        if (changed) {
-                            root.requestLayout()
-                            LogUtil.incr("bottomInsetReclaim")
-                        }
-                    }
-                } catch (_: Throwable) {}
-                if (root is ViewGroup) {
-                    for (i in 0 until root.childCount) reclaimLargeBranch(root.getChildAt(i), depth + 1)
-                }
-            }
-
-            var branch: View = marker
-            var parent = marker.parent as? ViewGroup
-            var depth = 0
-            while (parent != null && depth++ < 7) {
-                val parentChildren = parent.childCount
-                for (i in 0 until parentChildren) {
-                    val child = parent.getChildAt(i)
-                    if (child === branch) continue
-                    try {
-                        val lp = child.layoutParams
-                        var changed = false
-
-                        val btt = reflectIntField(lp, "bottomToTop")
-                        if (btt != null && btt >= 0 && anchorIds.contains(btt)) {
-                            rememberBottomLayoutState(child)
-                            setReflectIntField(lp, "bottomToTop", -1)
-                            setReflectIntField(lp, "bottomToBottom", 0)
-                            setReflectIntField(lp, "goneBottomMargin", 0)
-                            child.layoutParams = lp
-                            changed = true
-                            LogUtil.info("bottom constraint reclaimed: ${child.javaClass.name}, anchor=$btt")
-                            LogUtil.incr("bottomConstraintReclaim")
-                        }
-
-                        val loc = IntArray(2)
-                        child.getLocationOnScreen(loc)
-                        val w = if (child.width > 0) child.width else child.measuredWidth
-                        val h = if (child.height > 0) child.height else child.measuredHeight
-                        val childBottom = loc[1] + h
-                        val looksLikeMainContent = w > 0 && h > minLargeHeight &&
-                            w.toFloat() / dm.widthPixels.coerceAtLeast(1).toFloat() >= 0.82f &&
-                            loc[1] < markerTop - markerHeight
-                        if (looksLikeMainContent && isNear(childBottom, markerTop, tol) && lp != null) {
-                            val parentLoc = IntArray(2)
-                            parent.getLocationOnScreen(parentLoc)
-                            val parentH = if (parent.height > 0) parent.height else parent.measuredHeight
-                            val desiredHeight = parentLoc[1] + parentH - loc[1]
-                            val growBy = desiredHeight - h
-                            val maxGrow = (markerHeight * 1.8f).toInt().coerceAtLeast(markerHeight + tol)
-                            if (growBy > tol && growBy <= maxGrow) {
-                                rememberBottomLayoutState(child)
-                                lp.height = desiredHeight
-                                child.layoutParams = lp
-                                changed = true
-                                LogUtil.info("bottom content extended: ${child.javaClass.name}, ${h}px -> ${desiredHeight}px")
-                                LogUtil.incr("bottomHeightReclaim")
-                            }
-                        }
-
-                        if (looksLikeMainContent) reclaimLargeBranch(child)
-
-                        if (changed) {
-                            child.requestLayout()
-                            parent.requestLayout()
-                        }
-                    } catch (_: Throwable) {}
-                }
-                branch = parent
-                parent = parent.parent as? ViewGroup
-            }
-
-            val decor = gCurrentActivity?.window?.decorView
-            reclaimLargeBranch(decor)
-        } catch (e: Throwable) {
-            LogUtil.warn("reclaim bottom space from ar9 failed: $e")
-        }
-    }
-
-    private fun bottomBackdropCollapseTarget(marker: View): View {
-        val dm = try { marker.resources.displayMetrics } catch (_: Throwable) { return marker }
-        val density = dm.density.coerceAtLeast(0.1f)
-        var target: View = marker
-        var cur: View = marker
-        repeat(4) {
-            val parent = cur.parent as? View ?: return@repeat
-            val w = if (parent.width > 0) parent.width else parent.measuredWidth
-            val h = if (parent.height > 0) parent.height else parent.measuredHeight
-            if (w <= 0 || h <= 0) return@repeat
-            val hDp = h / density
-            val loc = IntArray(2)
-            try { parent.getLocationOnScreen(loc) } catch (_: Throwable) { return@repeat }
-            val fullWidth = w.toFloat() / dm.widthPixels.coerceAtLeast(1).toFloat() >= 0.92f
-            val compact = hDp in 48f..128f
-            val nearBottom = loc[1] + h >= dm.heightPixels * 0.92f
-            if (!fullWidth || !compact || !nearBottom) return@repeat
-            target = parent
-            cur = parent
-        }
-        return target
-    }
 
     private fun collapseHomeBottomBackdrop(marker: View?) {
         if (marker == null || !gMasterOn || !gControlOn || (gRestoreControlsOnPause && gVideoPaused)) return
@@ -2057,6 +1916,7 @@ object Hooks {
     private fun scanAllWindows() {
         try {
             if (gCurrentActivity == null) return
+            injectSharePanelEntries()
             val decor = gCurrentActivity!!.window.decorView
             gNames.hideIdNames.forEach { resolveEntryId(it, decor) }
             gNames.progressIdNames.forEach { resolveEntryId(it, decor, gProgressIdSet, "进度条资源") }
@@ -2086,11 +1946,159 @@ object Hooks {
     }
 
     private var gScanRunnable: Runnable? = null
+
+    // ==== 分享面板"模块设置"入口注入 ====
+    private val gInjectedShareRows = java.util.Collections.synchronizedMap(java.util.WeakHashMap<View, Boolean>())
+    private val gScannedWindowRoots = java.util.Collections.synchronizedMap(java.util.WeakHashMap<View, Boolean>())
+    private const val MODULE_PACKAGE = "com.sevtinge.hyperceiler"
+
+    private fun injectSharePanelEntries() {
+        try {
+            for (root in collectAllWindows()) {
+                val isNew = synchronized(gScannedWindowRoots) { gScannedWindowRoots.put(root, true) } == null
+                if (isNew) mainHandler.post { injectSharePanelEntry(root) }
+            }
+        } catch (_: Throwable) {}
+    }
+
+    private fun injectSharePanelEntry(root: View) {
+        try {
+            val title = findShareTitle(root) ?: return
+            val row = findShareIconRow(title) ?: return
+            synchronized(gInjectedShareRows) { if (gInjectedShareRows.containsKey(row)) return }
+            val act = unwrapActivity(row.context) ?: return
+
+            // 参考原生 item 的图标/文字样式
+            var iconRef: ImageView? = null
+            var labelRef: TextView? = null
+            findShareItemRefs(row.getChildAt(0), 0) { v ->
+                if (v is ImageView && iconRef == null) iconRef = v
+                if (v is TextView && labelRef == null) labelRef = v
+            }
+
+            var lp: LinearLayout.LayoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+            if (row.childCount > 0) {
+                val c0lp = row.getChildAt(0).layoutParams as? LinearLayout.LayoutParams
+                if (c0lp != null) lp = LinearLayout.LayoutParams(c0lp.width, c0lp.height, if (c0lp.weight > 0) c0lp.weight else 1f)
+            }
+
+            var iconSize = 0
+            iconRef?.let {
+                iconSize = it.layoutParams?.width ?: 0
+                if (iconSize <= 0 || iconSize >= 10000) iconSize = it.measuredWidth
+            }
+            if (iconSize <= 0) iconSize = dp(act, 52f)
+
+            val item = LinearLayout(act).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.CENTER_HORIZONTAL
+                val padV = dp(act, 8f)
+                setPadding(dp(act, 4f), padV, dp(act, 4f), padV)
+                isClickable = true
+                isFocusable = true
+            }
+
+            val icon = ImageView(act)
+            try {
+                icon.setImageDrawable(act.packageManager.getApplicationIcon(MODULE_PACKAGE))
+            } catch (_: Throwable) {
+                icon.setImageResource(android.R.drawable.ic_menu_manage)
+            }
+            icon.scaleType = ImageView.ScaleType.FIT_CENTER
+            item.addView(icon, LinearLayout.LayoutParams(iconSize, iconSize).apply { gravity = android.view.Gravity.CENTER_HORIZONTAL })
+
+            val label = TextView(act).apply {
+                text = "模块设置"
+                gravity = android.view.Gravity.CENTER
+                labelRef?.let {
+                    textSize = it.textSize / act.resources.displayMetrics.scaledDensity
+                    setTextColor(it.textColors)
+                    val pads = intArrayOf(it.paddingLeft, it.paddingTop, it.paddingRight, it.paddingBottom)
+                    setPadding(pads[0], pads[1], pads[2], pads[3])
+                }
+            }
+            item.addView(label, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { gravity = android.view.Gravity.CENTER_HORIZONTAL })
+
+            item.setOnClickListener {
+                try { it.isPressed = false } catch (_: Throwable) {}
+                mainHandler.post { showPanel(act) }
+            }
+
+            row.addView(item, lp)
+            synchronized(gInjectedShareRows) { gInjectedShareRows[row] = true }
+            LogUtil.info("✓ 分享面板已注入模块设置入口")
+        } catch (e: Throwable) {
+            LogUtil.warn("分享面板注入失败: $e")
+        }
+    }
+
+    private fun findShareTitle(v: View?): TextView? {
+        if (v == null) return null
+        if (v is TextView) {
+            val t = try { v.text?.toString()?.trim() } catch (_: Throwable) { null }
+            if (t == "分享至" || t == "分享到") return v
+        }
+        if (v is ViewGroup) for (i in 0 until v.childCount) {
+            val hit = findShareTitle(v.getChildAt(i))
+            if (hit != null) return hit
+        }
+        return null
+    }
+
+    private fun isShareIconRow(v: View): Boolean {
+        if (v !is LinearLayout || v.orientation != LinearLayout.HORIZONTAL || v.childCount < 3) return false
+        for (i in 0 until v.childCount) {
+            if (!viewTreeHasImageView(v.getChildAt(i), 0)) return false
+        }
+        return true
+    }
+
+    private fun viewTreeHasImageView(v: View?, depth: Int): Boolean {
+        if (v == null || depth > 6) return false
+        if (v is ImageView) return true
+        if (v is ViewGroup) for (i in 0 until v.childCount) {
+            if (viewTreeHasImageView(v.getChildAt(i), depth + 1)) return true
+        }
+        return false
+    }
+
+    private fun findShareIconRow(title: View?): ViewGroup? {
+        var node = title?.parent as? ViewGroup ?: return null
+        for (hop in 0 until 6) {
+            if (isShareIconRow(node)) return node
+            for (i in 0 until node.childCount) {
+                val c = node.getChildAt(i)
+                if (c !== title && c is ViewGroup && isShareIconRow(c)) return c
+            }
+            node = node.parent as? ViewGroup ?: return null
+        }
+        return null
+    }
+
+    private fun findShareItemRefs(v: View?, depth: Int, hit: (View) -> Unit) {
+        if (v == null || depth > 6) return
+        hit(v)
+        if (v is ViewGroup) for (i in 0 until v.childCount) findShareItemRefs(v.getChildAt(i), depth + 1, hit)
+    }
+
+    private fun unwrapActivity(ctx: Context?): Activity? {
+        var c = ctx
+        var hops = 0
+        while (c != null && hops < 8) {
+            if (c is Activity) return c
+            c = (c as? ContextWrapper)?.baseContext
+            hops++
+        }
+        return gCurrentActivity
+    }
+
     private fun startPeriodicScan() {
         stopPeriodicScan()
         gScanRunnable = object : Runnable {
             override fun run() {
                 try {
+                    if (shouldHideStatusBar()) guardStatusBarHidden()
+                    injectSharePanelEntries()
                     if (gMasterOn && gRestoreControlsOnPause && gVideoPaused) {
                         forcePauseRestoreControls()
                     }
@@ -2147,6 +2155,22 @@ object Hooks {
 
     private fun shouldHideStatusBar(): Boolean {
         return gMasterOn && gStatusOn
+    }
+
+    /**
+     * 状态栏隐藏守护：宿主在全屏播放期间可能自行 show 状态栏或清除 FLAG_FULLSCREEN，
+     * 导致状态栏重新可见。周期检测到隐藏标志丢失时重新 apply。
+     */
+    private fun guardStatusBarHidden() {
+        val act = gCurrentActivity ?: return
+        try {
+            if (act.isFinishing) return
+            val flags = act.window.attributes.flags
+            if (flags and WindowManager.LayoutParams.FLAG_FULLSCREEN == 0) {
+                LogUtil.info("status bar guard: FLAG_FULLSCREEN 丢失，重新 apply")
+                applyCleanTop(act)
+            }
+        } catch (_: Throwable) {}
     }
 
     private fun updateSeriesMallTopMargin(act: Activity, statusHidden: Boolean) {
@@ -2240,6 +2264,9 @@ object Hooks {
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
                     window.setDecorFitsSystemWindows(false)
                     window.statusBarColor = Color.TRANSPARENT
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        try { window.isStatusBarContrastEnforced = false } catch (_: Throwable) {}
+                    }
                     decor.windowInsetsController?.apply {
                         setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS)
                         if (Build.VERSION.SDK_INT >= 35) {
@@ -2267,6 +2294,7 @@ object Hooks {
                     window.statusBarColor = Color.BLACK
                 }
                 decor.requestApplyInsets()
+                synchronized(gTopAppliedActs) { gTopAppliedActs[act] = true }
                 updateSeriesMallTopMargin(act, true)
             }
 
@@ -2296,8 +2324,8 @@ object Hooks {
                 gLastWindowedMode = windowed
                 LogUtil.info("window mode -> ${if (windowed) "windowed" else "fullscreen"}, reason=$reason")
             }
-            if (gStatusOn) applyCleanTop(act) else showStatusBar(act)
-            if (gNavBarOff) applyNavBar(act) else showNavBar(act)
+            if (gStatusOn) applyCleanTop(act) else restoreStatusBarIfApplied(act)
+            if (gNavBarOff) applyNavBar(act) else restoreNavBarIfApplied(act)
             if (refreshLayout) refreshShortVideoWindowLayout(act)
         }, delay)
     }
@@ -2348,6 +2376,9 @@ object Hooks {
                     WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
             )
             window.statusBarColor = Color.TRANSPARENT
+            if (Build.VERSION.SDK_INT >= 29) {
+                try { window.isStatusBarContrastEnforced = false } catch (_: Throwable) {}
+            }
 
             if (Build.VERSION.SDK_INT >= 30) {
                 decor.windowInsetsController?.apply {
@@ -2363,9 +2394,24 @@ object Hooks {
                 View.SYSTEM_UI_FLAG_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             decor.requestApplyInsets()
+            synchronized(gTopAppliedActs) { gTopAppliedActs[act] = true }
             updateSeriesMallTopMargin(act, true)
         } catch (_: Exception) {}
     }
+    /** 仅当模块之前对此窗口施加过隐藏时才恢复状态栏（避免破坏宿主全屏页自身的隐藏逻辑） */
+    private fun restoreStatusBarIfApplied(act: Activity?) {
+        if (act == null) return
+        val applied = try { synchronized(gTopAppliedActs) { gTopAppliedActs.remove(act) } } catch (_: Throwable) { null } ?: return
+        if (applied) showStatusBar(act)
+    }
+
+    /** 仅当模块之前对此窗口施加过隐藏时才恢复导航栏 */
+    private fun restoreNavBarIfApplied(act: Activity?) {
+        if (act == null) return
+        val applied = try { synchronized(gNavAppliedActs) { gNavAppliedActs.remove(act) } } catch (_: Throwable) { null } ?: return
+        if (applied) showNavBar(act)
+    }
+
     private fun showStatusBar(act: Activity?) {
         if (act == null) return
         try {
@@ -2425,42 +2471,10 @@ object Hooks {
         }
     }
 
-    private fun extendKnownBottomContentRoot(act: Activity?, expectedGapPx: Int) {
-        if (act == null || expectedGapPx <= 0) return
-        try {
-            val id = act.resources.getIdentifier("hsw", "id", gPkg)
-            if (id == 0) return
-            val content = act.findViewById<View>(id) ?: return
-            val parent = content.parent as? View ?: return
-            val lp = content.layoutParams ?: return
-            val contentLoc = IntArray(2)
-            val parentLoc = IntArray(2)
-            content.getLocationOnScreen(contentLoc)
-            parent.getLocationOnScreen(parentLoc)
-            val contentH = if (content.height > 0) content.height else content.measuredHeight
-            val parentH = if (parent.height > 0) parent.height else parent.measuredHeight
-            if (contentH <= 0 || parentH <= 0) return
-            val desired = parentLoc[1] + parentH - contentLoc[1]
-            val gap = desired - contentH
-            val minGap = (expectedGapPx * 0.55f).toInt().coerceAtLeast(1)
-            val maxGap = (expectedGapPx * 1.8f).toInt().coerceAtLeast(expectedGapPx)
-            if (gap in minGap..maxGap && lp.height != desired) {
-                rememberBottomLayoutState(content)
-                lp.height = desired
-                content.layoutParams = lp
-                content.requestLayout()
-                (content.parent as? View)?.requestLayout()
-                LogUtil.info("hsw bottom extended: ${contentH}px -> ${desired}px, gap=${gap}px")
-                LogUtil.incr("bottomHswExtend")
-            }
-        } catch (e: Throwable) {
-            LogUtil.warn("extend hsw bottom failed: $e")
-        }
-    }
-
     private fun applyNavBar(act: Activity?) {
         if (act == null || !gMasterOn || !gNavBarOff) return
         applyBottomEdgeToEdge(act, true)
+        synchronized(gNavAppliedActs) { gNavAppliedActs[act] = true }
     }
     private fun showNavBar(act: Activity?) {
         if (act == null) return
@@ -3150,11 +3164,16 @@ object Hooks {
                     restoreShortVideoNativeControls()
                     restoreNativeBottomWindowColor(gCurrentActivity)
                     setVideoToolbarsVisible(true)
+                    restoreStatusBarIfApplied(gCurrentActivity)
+                    restoreNavBarIfApplied(gCurrentActivity)
                 }
             }, "master_on", true)
 
             content.addView(sectionTitle(act, "界面精简", p))
-            addSwitch("隐藏状态栏", "视频页面沉浸显示", { gStatusOn }, { gStatusOn = it }, "status_bar")
+            addSwitch("隐藏状态栏", "视频页面沉浸显示", { gStatusOn }, {
+                gStatusOn = it
+                if (!it) restoreStatusBarIfApplied(gCurrentActivity)
+            }, "status_bar")
             addSwitch("隐藏控件", "隐藏顶部/底部导航、作品信息和右侧互动等已适配区域", { gControlOn }, {
                 gControlOn = it
                 if (!it) {
@@ -3177,7 +3196,10 @@ object Hooks {
                     for (root in roots) scanTreeProgressRestore(root)
                 }
             }, "progress_off")
-            addSwitch("隐藏底部小白条", "隐藏系统手势导航提示条", { gNavBarOff }, { gNavBarOff = it }, "nav_bar_off")
+            addSwitch("隐藏底部小白条", "隐藏系统手势导航提示条", { gNavBarOff }, {
+                gNavBarOff = it
+                if (!it) restoreNavBarIfApplied(gCurrentActivity)
+            }, "nav_bar_off")
             addSwitch("暂停后恢复所有控件", "暂停视频时临时恢复控件，继续播放后按规则隐藏", { gRestoreControlsOnPause }, {
                 gRestoreControlsOnPause = it
                 if (it) refreshVideoPauseState("switch-enabled", gVideoPaused)
@@ -4120,8 +4142,8 @@ object Hooks {
                     if (focused) {
                         val a = chain.thisObject as? Activity
                         try {
-                            if (gMasterOn && gStatusOn) applyCleanTop(a) else showStatusBar(a)
-                            if (gMasterOn && gNavBarOff) applyNavBar(a) else showNavBar(a)
+                            if (gMasterOn && gStatusOn) applyCleanTop(a) else restoreStatusBarIfApplied(a)
+                            if (gMasterOn && gNavBarOff) applyNavBar(a) else restoreNavBarIfApplied(a)
                         } catch (_: Exception) {}
                     }
                     result
@@ -4227,15 +4249,12 @@ object Hooks {
                 result
             }
             ham(c, "hideStatusBar", "sbH") { chain ->
-                if (!shouldHideStatusBar()) {
-                    chain.proceed()
-                } else try {
-                    if (chain.args.size >= 2 && chain.getArg(1) is Boolean && !(chain.getArg(1) as Boolean)) {
-                        val args = (chain.args as Array<Any?>).copyOf()
-                        args[1] = true
-                        chain.proceed(args)
-                    } else chain.proceed()
-                } catch (_: Exception) { chain.proceed() }
+                val result = chain.proceed()
+                if (shouldHideStatusBar()) {
+                    val a = chain.getArg(0) as? Activity
+                    mainHandler.post { applyCleanTop(a) }
+                }
+                result
             }
 
             ham(c, "getStatusHeight", "sbHeight") { chain ->
@@ -4243,6 +4262,19 @@ object Hooks {
             }
             LogUtil.info("  ✓ StatusBarUtil")
         } catch (e: Exception) { LogUtil.warn("  StatusBarUtil 未找到") }
+
+        // 隐藏状态栏期间，拦截宿主对状态栏颜色的写入（防止宿主恢复页面时写白色导致白条）
+        try {
+            val c = Class.forName("android.view.Window", false, classLoader)
+            module.hook(c.getDeclaredMethod("setStatusBarColor", Int::class.javaPrimitiveType))
+                .setId("winStatusColorGuard")
+                .setExceptionMode(XposedInterface.ExceptionMode.PROTECTIVE)
+                .intercept(Hooker { chain ->
+                    if (shouldHideStatusBar()) chain.proceed(arrayOf<Any?>(Color.TRANSPARENT))
+                    else chain.proceed()
+                })
+            LogUtil.info("  ✓ Window.setStatusBarColor guard")
+        } catch (e: Throwable) { LogUtil.warn("  Window status color guard 不可用: $e") }
 
         try {
             val c = Class.forName("com.bytedance.ies.uikit.statusbar.StatusBarUtils", false, classLoader)
@@ -4777,8 +4809,8 @@ object Hooks {
                 val result = chain.proceed()
                 try {
                     if (a != null) {
-                        if (gMasterOn && gStatusOn) applyCleanTop(a) else showStatusBar(a)
-                        if (gMasterOn && gNavBarOff) applyNavBar(a) else showNavBar(a)
+                        if (gMasterOn && gStatusOn) applyCleanTop(a) else restoreStatusBarIfApplied(a)
+                        if (gMasterOn && gNavBarOff) applyNavBar(a) else restoreNavBarIfApplied(a)
                         createNotification(a)
                     }
                 } catch (_: Exception) {}
@@ -4802,15 +4834,15 @@ object Hooks {
                 val result = chain.proceed()
                 try {
                     if (a != null) {
-                        if (gMasterOn && gStatusOn) applyCleanTop(a) else showStatusBar(a)
-                        if (gMasterOn && gNavBarOff) applyNavBar(a) else showNavBar(a)
+                        if (gMasterOn && gStatusOn) applyCleanTop(a) else restoreStatusBarIfApplied(a)
+                        if (gMasterOn && gNavBarOff) applyNavBar(a) else restoreNavBarIfApplied(a)
                         createNotification(a)
                     }
                 } catch (_: Exception) {}
                 mainHandler.postDelayed({
                     scanAllWindows()
-                    if (gMasterOn && gStatusOn) applyCleanTop(a) else showStatusBar(a)
-                    if (gMasterOn && gNavBarOff) applyNavBar(a) else showNavBar(a)
+                    if (gMasterOn && gStatusOn) applyCleanTop(a) else restoreStatusBarIfApplied(a)
+                    if (gMasterOn && gNavBarOff) applyNavBar(a) else restoreNavBarIfApplied(a)
                 }, 400)
                 startPeriodicScan()
                 LogUtil.diagDump(true)

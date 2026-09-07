@@ -558,10 +558,4 @@ fun View.setPaddingSide(paddingSide: Int) =
 fun View.setPaddingSide(paddingLeft: Int, paddingRight: Int) =
     setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
 
-// -------------------- Resources Hook 数据类 --------------------
 
-data class ResourcesHookData(val type: String, val afterValue: Any)
-
-class ResourcesHookMap<String, ResourcesHookData> : HashMap<String, ResourcesHookData>() {
-    fun isKeyExist(key: String): Boolean = getOrDefault(key, null) != null
-}

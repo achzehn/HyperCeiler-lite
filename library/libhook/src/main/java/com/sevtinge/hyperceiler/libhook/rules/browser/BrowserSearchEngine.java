@@ -22,60 +22,54 @@ import java.util.List;
 import io.github.kyuubiran.ezxhelper.xposed.common.HookParam;
 
 /**
- * 浏览器搜索引擎注入（方案：search_engine_sync_hook.md）。
+ * 浏览器搜索引擎注入。
  * <p>
- * 注入点（反编译确认）：
+ * 注入点（反编译确认，手机端百度合作版与平板端 20.6.970814 统一）：
  * <ol>
- * <li>主注入点（手机端百度合作版）：SearchEngineSet.initialize(SearchEnginesEntity)
- * before 改写实体 —— browserSearchBox 场景 searchEngines 替换为内置配置引擎、
- * defaultSearchEngineMap 指向配置引擎；引擎弹窗/当前引擎均以该映射为数据源；
- * <li>兼容注入点（旧版本/平板端）：SearchEngineItem 15 参构造参数替换。
+ * <li>主注入点：SearchEngineSet.initialize(SearchEnginesEntity) before 改写实体 ——
+ * browserSearchBox 场景 searchEngines 替换为「内置配置引擎在前 + 原生引擎在后（去重）」，
+ * defaultSearchEngineMap 全部值指向配置默认引擎；引擎选择弹窗、当前引擎均以该映射为数据源。
+ * 平板端 updateSearchEngineByRemote 会在启动时把当前引擎强制对齐
+ * defaultSearchEngineMap[browserSearchBox]（服务端默认，通常 baidu），
+ * 因此必须改写该映射，否则用户选择的注入引擎重启后丢失；
+ * <li>引擎切换写入点：SearchModuleSettings.setSearchEngineName after 发布当前引擎
+ * 到快速搜索（{@link SearchEngineSync}）。
  * </ol>
+ * 注：旧版基于 SearchEngineItem 15 参构造的兼容注入点已移除 —— 平板浏览器
+ * 20.6.970814 中该构造全库无调用方（死路径），引擎链路统一走
+ * SearchEngineSet.initialize + SearchEnginesEntity.SearchEngine。
+ * <p>
  * 引擎内容来源（按优先级）：
  * <ol>
  * <li>内置 searchEngines JSON 配置（{@link SearchEngineConfig}，浏览器原生
- * searchengine.json 格式；条目按 searchEngineName 匹配，未命中使用默认引擎）；
+ * searchengine.json 格式）；
  * <li>模块设置中的自定义覆盖（显示名/搜索链接/图标，非空且不同于界面默认值时生效）。
  * </ol>
- * 全程内存注入，不落地本地存储。注意：注入条目的 searchEngineName/keyword/
- * channelId 保持稳定（Item 路径保留宿主原值），避免宿主按名称查引擎表时 NPE。
+ * 全程内存注入，不落地本地存储。注意：必须保留原生引擎（尤其 baidu）——宿主
+ * getSearchEngineContentByScene 对未知引擎名会硬编码回落到 get("baidu").toContent()，
+ * 缺失即 NPE 闪退；注入条目的 searchEngineName 保持稳定，避免宿主按名称查引擎表时 NPE。
  */
 public class BrowserSearchEngine extends BaseHook {
 
     private static final String TAG = "BrowserSearchEngine";
 
-    // 内置默认引擎（配置解析失败时的兜底）：必应
-    private static final String DEFAULT_ENGINE_NAME = "bing";
-    private static final String DEFAULT_ENGINE_LABEL = "必应";
-    private static final String DEFAULT_SEARCH_URL = "https://www.bing.com/search?q={searchTerms}";
-    private static final String DEFAULT_ICON_URL = "https://www.bing.com/favicon.ico";
-
     // 界面默认值：设置项等于这些值时视为未配置覆盖
-    private static final String UI_DEFAULT_NAME = "bing";
     private static final String UI_DEFAULT_LABEL = "必应";
     private static final String UI_DEFAULT_URL = "https://www.bing.com/search?q={searchTerms}";
     private static final String UI_DEFAULT_ICON = "https://www.bing.com/favicon.ico";
 
     // 自定义覆盖偏好键（非空且不同于界面默认值时生效；浏览器与快速搜索设置页共用）
-    private static final String PREF_OVERRIDE_NAME = "browser_search_engine_name";
     private static final String PREF_OVERRIDE_LABEL = "browser_search_engine_label";
     private static final String PREF_OVERRIDE_URL = "browser_search_engine_url";
     private static final String PREF_OVERRIDE_ICON = "browser_search_engine_icon";
 
-    /** 浏览器引擎条目类（手机/平板端一致，均含 15 参私有构造与静态 deserialize） */
-    private static final String BROWSER_ITEM_CLASS =
-        "com.android.browser.search.SearchEngineDataProvider$SearchEngineItem";
-
     /**
-     * 手机端（百度合作版浏览器）实际引擎链路：SearchEngineSet.initialize(SearchEnginesEntity)
-     * 由 SearchEnginesEntity（原生 searchengine.json 解析结果）构建 searchBox 映射，
-     * 引擎选择弹窗/getSearchEngineList 均以它为数据源。SearchEngineItem 构造在该
-     * 版本浏览器中不再被引擎列表路径调用（仅快速搜索兼容保留）。
+     * 实际引擎链路：SearchEngineSet.initialize(SearchEnginesEntity) 由
+     * SearchEnginesEntity（原生 searchengine.json 解析结果）构建各场景映射，
+     * 引擎选择弹窗/getSearchEngineContentByScene 均以它为数据源。
      */
     private static final String BROWSER_ENGINE_SET_CLASS =
         "com.android.browser.search.SearchEngineDataProvider$SearchEngineSet";
-    private static final String BROWSER_ENTITY_CLASS =
-        "com.android.browser.search.SearchEnginesEntity";
     private static final String BROWSER_SCENE_CLASS =
         "com.android.browser.search.SearchEnginesEntity$SearchEngineScene";
     private static final String BROWSER_SEARCH_ENGINE_CLASS =
@@ -87,95 +81,30 @@ public class BrowserSearchEngine extends BaseHook {
     private static final String BROWSER_MODULE_SETTINGS_CLASS =
         "com.android.browser.search.interaction.settings.SearchModuleSettings";
 
-    // 15 参构造参数位置（searchEngineName, showIcon, iconUrl, title_bo_CN, title_ug_CN,
-    // keyword, label, channelId, search_uri, search_uri_desktop, suggest_uri,
-    // title_en_US, title_zh_CN, title_zh_TW, extra）
-    private static final int IDX_SHOW_ICON = 1;
-    private static final int IDX_ICON_URL = 2;
-    private static final int IDX_TITLE_BO = 3;
-    private static final int IDX_TITLE_UG = 4;
-    private static final int IDX_LABEL = 6;
-    private static final int IDX_SEARCH_URI = 8;
-    private static final int IDX_URI_DESKTOP = 9;
-    private static final int IDX_SUGGEST_URI = 10;
-    private static final int IDX_TITLE_EN = 11;
-    private static final int IDX_TITLE_ZH = 12;
-    private static final int IDX_TITLE_TW = 13;
-
     @Override
     public void init() {
         hookBrowserItem(this, TAG);
     }
 
-    // ==================== 注入内容解析（同步 → 覆盖 → 默认） ====================
-
-    /** 解析后的注入内容（名称保持宿主原值，不参与解析） */
-    private static final class Content {
-        String iconUrl;
-        String label;
-        String searchUri;
-        String titleZh;
-        String titleTw;
-        String titleEn;
-    }
+    // ==================== 自定义覆盖 ====================
 
     /**
-     * 按条目名称解析注入内容：
-     * 内置配置按 searchEngineName 精确匹配，未命中使用默认引擎；
-     * 之后应用自定义覆盖（非空且不同于界面默认值才视为已配置）。
+     * 应用自定义覆盖到配置引擎（就地修改）：
+     * 显示名/搜索链接/图标，非空且不同于界面默认值才视为已配置。
      */
-    private static Content resolveContent(String nativeName) {
-        Content content = new Content();
-        SearchEngineConfig.Engine engine = null;
-
-        SearchEngineConfig.Config config = SearchEngineConfig.load();
-        if (config != null) {
-            engine = config.findByName(nativeName);
-            if (engine == null) {
-                // 未命中：使用默认引擎（defaultSearchEngineMap 指定或列表首个）
-                engine = config.primary();
-            }
-        }
-
-        if (engine != null) {
-            content.iconUrl = engine.icon;
-            content.label = !TextUtils.isEmpty(engine.titleZh) ? engine.titleZh
-                : !TextUtils.isEmpty(engine.keyword) ? engine.keyword : engine.name;
-            content.searchUri = engine.url;
-            content.titleZh = engine.titleZh;
-            content.titleTw = engine.titleTw;
-            content.titleEn = engine.titleEn;
-        } else {
-            content.iconUrl = DEFAULT_ICON_URL;
-            content.label = DEFAULT_ENGINE_LABEL;
-            content.searchUri = DEFAULT_SEARCH_URL;
-        }
-
-        // 自定义覆盖：仅当值非空且不同于界面默认值时生效（引擎标识不覆盖，避免宿主查表 NPE）
+    private static void applyOverride(SearchEngineConfig.Engine engine) {
         String overrideLabel = overridden(PREF_OVERRIDE_LABEL, UI_DEFAULT_LABEL);
         if (overrideLabel != null) {
-            content.label = overrideLabel;
+            engine.titleZh = overrideLabel;
         }
         String overrideUrl = overridden(PREF_OVERRIDE_URL, UI_DEFAULT_URL);
         if (overrideUrl != null) {
-            content.searchUri = overrideUrl;
+            engine.url = overrideUrl;
         }
         String overrideIcon = overridden(PREF_OVERRIDE_ICON, UI_DEFAULT_ICON);
         if (overrideIcon != null) {
-            content.iconUrl = overrideIcon;
+            engine.icon = overrideIcon;
         }
-
-        // 标题统一兜底为显示名（浏览器按语言取标题，缺语言会显示为空）
-        if (TextUtils.isEmpty(content.titleZh)) {
-            content.titleZh = content.label;
-        }
-        if (TextUtils.isEmpty(content.titleTw)) {
-            content.titleTw = content.label;
-        }
-        if (TextUtils.isEmpty(content.titleEn)) {
-            content.titleEn = content.label;
-        }
-        return content;
     }
 
     /** 读取覆盖项：非空且不同于界面默认值时返回值，否则返回 null */
@@ -184,129 +113,20 @@ public class BrowserSearchEngine extends BaseHook {
         return (!TextUtils.isEmpty(value) && !value.equals(uiDefault)) ? value : null;
     }
 
-    /** 渠道号兜底值：自定义覆盖标识或内置默认 */
-    private static String fallbackChannelId() {
-        String name = overridden(PREF_OVERRIDE_NAME, UI_DEFAULT_NAME);
-        return name != null ? name : DEFAULT_ENGINE_NAME;
-    }
-
     // ==================== 浏览器 Hook（手机/平板统一） ====================
 
     /**
-     * Hook 浏览器引擎条目构造函数（含 deserialize 路径）：
-     * 按条目名称匹配同步配置并替换内容字段。
-     * <p>
-     * 仅在浏览器进程中激活：快速搜索进程内存在同名引擎条目类（小米复用代码），
-     * 其"全网搜索/百度/抖音"等系统条目不可替换，否则导致快速搜索闪退。
+     * Hook 浏览器主注入点（仅在浏览器进程中激活：快速搜索进程内存在同名引擎条目类，
+     * 其"全网搜索/百度/抖音"等系统条目不可替换，否则导致快速搜索闪退）。
      */
     public static boolean hookBrowserItem(BaseHook hook, String logTag) {
         if (!"com.android.browser".equals(BaseLoad.getPackageName())) {
             XposedLog.i(logTag, "Skip browser engine hook in process: " + BaseLoad.getPackageName());
             return false;
         }
-        // 主注入点（手机端新链路）：SearchEngineSet.initialize 前改写 SearchEnginesEntity
         android.util.Log.i("SearchEngineSyncD", "hookBrowserItem entry, pkg=" + BaseLoad.getPackageName());
         boolean hooked = hookEngineSetInitialize(hook, logTag);
         android.util.Log.i("SearchEngineSyncD", "hookEngineSetInitialize result=" + hooked);
-        // 兼容注入点（旧版本/平板端 SearchEngineItem 构造路径）
-        Class<?> itemClass = hook.findClassIfExists(BROWSER_ITEM_CLASS);
-        if (itemClass == null) {
-            XposedLog.w(logTag, "Browser engine item class not found: " + BROWSER_ITEM_CLASS);
-            return hooked;
-        }
-        try {
-            hook.hookAllConstructors(itemClass, new IMethodHook() {
-                @Override
-                public void before(HookParam param) {
-                    try {
-                        Object[] args = param.getArgs();
-                        if (args.length != 15 || !(args[0] instanceof String)) {
-                            return;
-                        }
-                        Content content = resolveContent((String) args[0]);
-                        args[IDX_SHOW_ICON] = true;
-                        args[IDX_ICON_URL] = content.iconUrl;
-                        args[IDX_LABEL] = content.label;
-                        args[IDX_SEARCH_URI] = content.searchUri;
-                        args[IDX_URI_DESKTOP] = null;
-                        args[IDX_SUGGEST_URI] = null;
-                        args[IDX_TITLE_BO] = content.label;
-                        args[IDX_TITLE_UG] = content.label;
-                        args[IDX_TITLE_EN] = content.titleEn;
-                        args[IDX_TITLE_ZH] = content.titleZh;
-                        args[IDX_TITLE_TW] = content.titleTw;
-                        XposedLog.d(TAG, "Engine content injected for: " + args[0]);
-                    } catch (Throwable t) {
-                        XposedLog.w(TAG, "Browser engine constructor hook error", t);
-                    }
-                }
-            });
-            XposedLog.i(logTag, "Hooked browser engine item constructors");
-            hooked = true;
-        } catch (Exception e) {
-            XposedLog.w(logTag, "Failed to hook browser engine constructor", e);
-            return hooked;
-        }
-        // 设置页列表内容兜底：已缓存的引擎对象不重新走构造，
-        // toContent() 返回 {label, keyword, iconUrl, search_uri, charset, suggest_uri, channelId}
-        try {
-            hook.hookAllMethods(itemClass, "toContent", new IMethodHook() {
-                @Override
-                public void after(HookParam param) {
-                    try {
-                        Object result = param.getResult();
-                        if (!(result instanceof String[]) || ((String[]) result).length < 7) {
-                            return;
-                        }
-                        Object thisObj = param.getThisObject();
-                        String nativeName = readNativeName(thisObj);
-                        Content content = resolveContent(nativeName);
-                        String[] arr = (String[]) result;
-                        arr[0] = content.label;
-                        arr[2] = content.iconUrl;
-                        arr[3] = content.searchUri;
-                        arr[5] = null;
-                        arr[6] = fallbackChannelId();
-                        param.setResult(arr);
-                    } catch (Throwable t) {
-                        XposedLog.w(TAG, "toContent hook error", t);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            XposedLog.w(logTag, "Failed to hook toContent", e);
-        }
-        // 统计渠道参数兜底：优先补充 URL 中标准渠道参数，仍为空时使用覆盖标识
-        try {
-            hook.hookAllMethods(itemClass, "getChannelId", new IMethodHook() {
-                @Override
-                public void after(HookParam param) {
-                    try {
-                        Object result = param.getResult();
-                        if (result instanceof String && !TextUtils.isEmpty((String) result)) {
-                            return;
-                        }
-                        Object urlArg = param.getArgs() != null && param.getArgs().length > 0
-                            ? param.getArgs()[0] : null;
-                        if (urlArg instanceof String && !TextUtils.isEmpty((String) urlArg)) {
-                            android.net.Uri uri = android.net.Uri.parse((String) urlArg);
-                            for (String key : new String[]{"from", "bid", "pid", "srcg", "original_source"}) {
-                                String value = uri.getQueryParameter(key);
-                                if (!TextUtils.isEmpty(value)) {
-                                    param.setResult(value);
-                                    return;
-                                }
-                            }
-                        }
-                        param.setResult(fallbackChannelId());
-                    } catch (Throwable t) {
-                        XposedLog.w(TAG, "getChannelId hook error", t);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            XposedLog.w(logTag, "Failed to hook getChannelId", e);
-        }
         return hooked;
     }
 
@@ -314,13 +134,16 @@ public class BrowserSearchEngine extends BaseHook {
 
     /**
      * Hook 静态方法 SearchEngineSet.initialize(SearchEnginesEntity)：
-     * 在构建 searchBox 映射前，把传入实体的 browserSearchBox 场景的
-     * searchEngines 数组改为「配置引擎在前 + 原生引擎在后（去重）」，
-     * 并把 defaultSearchEngineMap 的 browserSearchBox 默认值指向配置引擎。
+     * 在构建各场景映射前改写传入实体：
+     * <ul>
+     * <li>browserSearchBox 场景 searchEngines 改为「配置引擎在前 + 原生引擎在后（去重）」；
+     * <li>defaultSearchEngineMap 全部值指向配置默认引擎 —— 平板浏览器
+     * updateSearchEngineByRemote 会在启动图标预载完成后把当前引擎强制对齐
+     * defaultSearchEngineMap[browserSearchBox]，不改写则注入引擎每次启动被切回服务端默认。
+     * </ul>
      * <p>
-     * 注意：必须保留原生引擎（尤其 baidu）——宿主
-     * getSearchEngineContentByScene 对未知引擎名会硬编码回落到
-     * get("baidu").toContent()，缺失即 NPE 闪退（实测崩溃根因）。
+     * 注意：必须保留原生引擎（尤其 baidu）——宿主 getSearchEngineContentByScene
+     * 对未知引擎名会硬编码回落到 get("baidu").toContent()，缺失即 NPE 闪退。
      */
     private static boolean hookEngineSetInitialize(BaseHook hook, String logTag) {
         Class<?> setClass = hook.findClassIfExists(BROWSER_ENGINE_SET_CLASS);
@@ -361,7 +184,7 @@ public class BrowserSearchEngine extends BaseHook {
 
     /**
      * Hook SearchModuleSettings.setSearchEngineName（引擎切换写入点）：
-     * 用户在弹窗中选择引擎后向快速搜索发布新引擎。
+     * 用户在弹窗中选择引擎/宿主强制对齐默认引擎后向快速搜索发布新引擎。
      */
     private static void hookSearchModuleSettings(BaseHook hook, String logTag) {
         Class<?> settingsClass = hook.findClassIfExists(BROWSER_MODULE_SETTINGS_CLASS);
@@ -382,7 +205,7 @@ public class BrowserSearchEngine extends BaseHook {
         }
     }
 
-    /** 把 SearchEnginesEntity 的 browserSearchBox 场景与默认引擎改写为内置配置 */
+    /** 把 SearchEnginesEntity 的 browserSearchBox 场景与默认引擎映射改写为内置配置 */
     private static void rewriteSearchEnginesEntity(Object entity) throws Exception {
         SearchEngineConfig.Config config = SearchEngineConfig.load();
         if (config == null || config.engines == null || config.engines.isEmpty()) {
@@ -428,10 +251,24 @@ public class BrowserSearchEngine extends BaseHook {
             setField(scene, "resetSearchEngineData", false);
         }
 
+        // 2) defaultSearchEngineMap → 全部指向配置默认引擎。
+        //    平板浏览器 20.6.970814 的 updateSearchEngineByRemote 在启动图标预载完成后
+        //    把当前引擎强制对齐 defaultSearchEngineMap[browserSearchBox]（服务端默认，
+        //    通常 baidu），不改写则注入引擎每次启动被切回；用户在浏览器内主动切换时
+        //    overrideDataByChoose 会持久化其选择，与本改写互不冲突。
+        if (primaryName != null) {
+            Object defaultMap = invokeGetter(entity, "getDefaultSearchEngineMap");
+            if (defaultMap instanceof java.util.Map) {
+                @SuppressWarnings("unchecked")
+                java.util.Map<Object, Object> defaults = (java.util.Map<Object, Object>) defaultMap;
+                for (Object key : new ArrayList<>(defaults.keySet())) {
+                    defaults.put(key, primaryName);
+                }
+            }
+        }
+
         // 注意：此处不要访问 SearchEngineDataProvider（getInstance 会触发宿主 DI
         // 服务图初始化，在主线程 initialize 钩子中执行曾造成 onCreate 卡顿 7 秒白屏）。
-        // 默认引擎映射保持宿主原值：用户选择过的引擎已由 overrideDataByChoose
-        // 持久化，原生兜底逻辑也依赖映射中存在原生引擎。
         XposedLog.i(TAG, "SearchEnginesEntity rewritten: " + injected.size()
             + " injected engine(s)");
     }
@@ -485,6 +322,7 @@ public class BrowserSearchEngine extends BaseHook {
                                                     List<SearchEngineConfig.Engine> engines) throws Exception {
         List<Object> result = new ArrayList<>(engines.size());
         for (SearchEngineConfig.Engine engine : engines) {
+            applyOverride(engine);
             Object obj = engineClass.newInstance();
             String label = !TextUtils.isEmpty(engine.titleZh) ? engine.titleZh
                 : !TextUtils.isEmpty(engine.keyword) ? engine.keyword : engine.name;
@@ -502,8 +340,6 @@ public class BrowserSearchEngine extends BaseHook {
         }
         return result;
     }
-
-    // ==================== 反射工具 ====================
 
     // ==================== 当前引擎发布（浏览器 → 快速搜索） ====================
 
@@ -554,24 +390,6 @@ public class BrowserSearchEngine extends BaseHook {
         return holder.findClassIfExists(BROWSER_PROVIDER_CLASS);
     }
 
-    /** 读取 provider 当前引擎名（失败返回 null） */
-    private static String readProviderEngineName() {
-        try {
-            Class<?> providerClass = findProviderClass();
-            if (providerClass == null) {
-                return null;
-            }
-            Object provider = providerClass.getMethod("getInstance").invoke(null);
-            if (provider == null) {
-                return null;
-            }
-            Object name = invokeGetter(provider, "getSearchEngine");
-            return name instanceof String ? (String) name : null;
-        } catch (Throwable t) {
-            return null;
-        }
-    }
-
     /** 从 engineSet.searchBox 读取引擎图标 URL（失败返回 null） */
     private static String readProviderIconUrl(Object provider, String name) {
         try {
@@ -591,6 +409,8 @@ public class BrowserSearchEngine extends BaseHook {
         }
         return null;
     }
+
+    // ==================== 反射工具 ====================
 
     private static Object readField(Object target, String name) throws Exception {
         Class<?> clazz = target.getClass();
@@ -646,21 +466,6 @@ public class BrowserSearchEngine extends BaseHook {
             } catch (NoSuchFieldException ignored) {
                 clazz = clazz.getSuperclass();
             }
-        }
-    }
-
-    /** 读取条目 searchEngineName 字段（final 字段，反射只读，失败返回 null） */
-    private static String readNativeName(Object item) {
-        if (item == null) {
-            return null;
-        }
-        try {
-            java.lang.reflect.Field field = item.getClass().getDeclaredField("searchEngineName");
-            field.setAccessible(true);
-            Object value = field.get(item);
-            return value instanceof String ? (String) value : null;
-        } catch (Throwable t) {
-            return null;
         }
     }
 }
