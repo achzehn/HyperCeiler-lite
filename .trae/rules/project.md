@@ -21,6 +21,10 @@ alwaysApply: true
 - 远端配置与 system_server hook 分别依赖框架声明的 `PROP_CAP_REMOTE` / `PROP_CAP_SYSTEM`（`getFrameworkProperties()`），缺失时只能降级跳过，不能假定框架一定提供。
 - `ExceptionMode` 默认 `DEFAULT`＝跟随 `module.prop` 的 `exceptionMode`，生产环境用 `protective`；入口类与 `BaseLoad` 子类必须配 R8 keep + `-adaptresourcefilecontents META-INF/xposed/java_init.list`，否则混淆后入口列表失效。
 
+## Git 远端与推送
+- 远端必须使用 SSH（`git@github.com:achzehn/HyperCeiler-lite.git`）：单次推送改动文件数上千（如 `refresh` 分支 1668 个文件）时，HTTPS 走 GitHub 的 HTTP 接口会超限失败（`RPC failed` / `413` / remote end hung up），SSH 无该限制，可一次推完。
+- 本仓库 `remote.origin.fetch` 曾被限制为 `+refs/heads/main:refs/remotes/origin/main`，导致其他分支无远端跟踪引用、`git fetch` 只更新 FETCH_HEAD；已改为标准 `+refs/heads/*:refs/remotes/origin/*`。新建远端分支后需 `git fetch --prune` 再 `git branch -u origin/<分支>`。
+
 ## ADB 无线调试（HyperOS）
 - HyperOS 设备"无线调试"的连接端口（`adb-tls-connect`）每次开关/重进页面都会轮换（如 36211→38041），旧端口直接连接失败；授权弹窗随连接断开被 adbd 取消，表现为"弹窗一闪而过"。排查端口优先用 `adb mdns services` 而不是靠人肉读屏。
 - HyperOS 默认限制普通 logcat（main 缓冲为空），`adb shell logcat -d` 无输出，不要依赖设备端日志排查连接/授权问题。
