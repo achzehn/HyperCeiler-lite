@@ -398,6 +398,7 @@ public class AboutSettingsFragment extends BasePreferenceFragment
         //mCards.add(mDeviceNameCardView);
         //mCards.add(mVersionNameCardView);
         mCards.add(mDeviceInfoCardView);
+        mVersionCardView.refreshUpdateStatus(getAppCompatActionBar().getTitleView(0), mBgEffectView);
         mVersionCardView.refreshVersionName();
         mVersionCardView.setCardClickView(mVersionCardClickView, getAppCompatActionBar().getActionBarView());
     }

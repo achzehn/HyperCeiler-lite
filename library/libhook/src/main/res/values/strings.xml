@@ -48,8 +48,6 @@
     <string name="app_link_open_never">Don\'t allow apps to open links</string>
     <string name="dashboard_5g">Use 5G</string>
     <string name="tiles_sunshine_mode">Sunlight mode</string>
-    <string name="system_cc_showpct_style_1">Inline</string>
-    <string name="system_cc_showpct_style_2">Explicit</string>
     <string name="media_control_ground_mode_1">Cover art</string>
     <string name="media_control_ground_mode_2">Blurry cover</string>
     <string name="media_control_ground_mode_3">Radial gradient</string>
@@ -112,9 +110,6 @@
     <string name="wallet_disable_splash_ad_desc">Skip splash screen and block ad requests</string>
     <!--AICR-->
     <string name="aicr">Xiaomi AI Engine</string>
-    <string name="aicr_modify_browser_copy">Change the browser used for direct copy</string>
-    <string name="aicr_preferred_browser">Preferred browser</string>
-    <string name="aicr_default_browser">Default browser</string>
     <!--XMSF-->
     <string name="xmsf">Xiaomi Service Framework</string>
     <string name="xmsf_unlock_foucs_app_sign_white_list">Unlock Focus Notification Whitelist Signature Verification</string>

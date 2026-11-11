@@ -30,6 +30,9 @@ import com.sevtinge.hyperceiler.utils.LanguageHelper;
 import com.sevtinge.hyperceiler.utils.ScopeManager;
 import com.sevtinge.hyperceiler.utils.ThreadUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,6 +40,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import fan.appcompat.app.AppCompatActivity;
 import fan.nestedheader.widget.NestedHeaderLayout;
@@ -53,6 +58,7 @@ public class ScopePickerActivity extends AppCompatActivity
     private static final int MODE_SCOPE = 6;
     private static final int REQUEST_GET_INSTALLED_APPS = 1201;
     private static final String SYSTEM_SCOPE_PACKAGE = "system";
+    private static final String RECOMMENDED_SCOPE_ENTRY = "META-INF/xposed/scope.list";
 
     private View mSearchBar;
     private TextView mSearchInputView;
@@ -186,6 +192,13 @@ public class ScopePickerActivity extends AppCompatActivity
                 mAvailableScopePackages.clear();
                 mAvailableScopePackages.addAll(availableScopePackages);
 
+                if (mCurrentScopePackages.isEmpty()) {
+                    mCurrentScopePackages.addAll(ScopeManager.filterScopePackages(
+                        loadRecommendedScopePackages(),
+                        availableScopePackages
+                    ));
+                }
+
                 cleanupUnavailableScopePackages(currentScopePackages, installedScopePackages);
 
                 List<AppData> processedData = processAppData(new ArrayList<>(loadedData));
@@ -288,6 +301,30 @@ public class ScopePickerActivity extends AppCompatActivity
             data.add(0, createSystemFrameworkApp());
         }
         return data;
+    }
+
+    private Set<String> loadRecommendedScopePackages() {
+        Set<String> packages = new LinkedHashSet<>();
+        try (ZipFile zipFile = new ZipFile(getApplicationInfo().sourceDir)) {
+            ZipEntry entry = zipFile.getEntry(RECOMMENDED_SCOPE_ENTRY);
+            if (entry == null) {
+                AndroidLog.w(TAG, "loadRecommendedScopePackages: scope.list not found");
+                return packages;
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                zipFile.getInputStream(entry), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String normalized = ScopeManager.normalizeScopePackageName(line);
+                    if (normalized != null) {
+                        packages.add(normalized);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            AndroidLog.w(TAG, "loadRecommendedScopePackages: failed to read scope.list", e);
+        }
+        return packages;
     }
 
     private Set<String> collectScopePackages(List<AppData> data) {

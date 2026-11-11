@@ -14,10 +14,9 @@ local.properties
 /app/canary
 /app/debug
 signing.properties
-keystore.jks
 /.kotlin
 /library/hook
-*.log
-log日志/
-.gitignore
-trush/
+*.apk
+/handover/
+/.workbuddy/
+/tmp/

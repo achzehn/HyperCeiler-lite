@@ -49,7 +49,7 @@ android {
         minSdk = 35
         targetSdk = 37
         versionCode = gitVersionCode
-        versionName = "ac21.10.166"
+        versionName = "2.10.166"
 
         val buildTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").apply {
             timeZone = TimeZone.getTimeZone("Asia/Shanghai")
@@ -71,6 +71,18 @@ android {
             // noinspection ChromeOsAbiSupport
             abiFilters += "arm64-v8a"
         }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags += listOf("-std=c++20", "-fvisibility=hidden")
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
     }
 
     buildFeatures {
@@ -87,19 +99,19 @@ android {
             merges += listOf("META-INF/xposed/*")
             excludes += listOf("**")
         }
+        jniLibs {
+            useLegacyPackaging = false
+        }
         dex {
             useLegacyPackaging = true
         }
     }
 
     val properties: Properties? = loadPropertiesFromFile("signing.properties")
-    // 相对路径基于项目根目录解析（与 signing.properties 注释一致）
     fun getString(propertyName: String, environmentName: String, prompt: String): String =
         properties?.getProperty(propertyName)
             ?: System.getenv(environmentName)
             ?: System.console()?.readLine("\n$prompt: ").orEmpty()
-
-    fun resolveStoreFile(path: String) = rootProject.file(path)
 
     val buildTimeSuffix: String by lazy {
         SimpleDateFormat("MMddHHmm").apply {
@@ -113,7 +125,7 @@ android {
     signingConfigs {
         create("hasProperties") {
             if (properties != null) {
-                storeFile = resolveStoreFile(getString("storeFile", "STORE_FILE", "Store file"))
+                storeFile = file(getString("storeFile", "STORE_FILE", "Store file"))
                 storePassword = getString("storePassword", "STORE_PASSWORD", "Store password")
                 keyAlias = getString("keyAlias", "KEY_ALIAS", "Key alias")
                 keyPassword = getString("keyPassword", "KEY_PASSWORD", "Key password")
@@ -189,11 +201,11 @@ tasks.withType<PackageAndroidArtifact> {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
-kotlin.jvmToolchain(21)
+kotlin.jvmToolchain(25)
 
 dependencies {
     implementation(libs.viewpager2)
@@ -205,4 +217,27 @@ dependencies {
     // FTS 支持
     api (libs.room.ktx)
     annotationProcessor (libs.room.compiler)
+}
+
+/**
+ * Host-side native tests for the NativeHookRuntime (app/src/main/cpp/nativehook/)
+ * and the desktop Dart hook's host-testable layers.
+ *
+ * These run on the build machine, not on Android: they need no device and no
+ * Android SDK. On Linux they also build the ARM64 assembly harness test; on
+ * macOS that single test is skipped by the script (eventfd / GNU as).
+ *
+ * Usage: ./gradlew :app:hostNativeTests
+ * Optional: ./gradlew :app:hostNativeTests -PlibappSo=/path/to/libapp.so
+ */
+tasks.register<Exec>("hostNativeTests") {
+    group = "verification"
+    description = "Compiles and runs the host native tests (no device required)"
+    workingDir = rootProject.projectDir
+    val script = rootProject.file("tests/run_host_native_tests.sh")
+    commandLine(buildList {
+        add("bash")
+        add(script.absolutePath)
+        (project.findProperty("libappSo") as String?)?.let { add(it) }
+    })
 }

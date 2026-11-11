@@ -42,8 +42,6 @@
     <string name="app_link_open_never">不允许应用打开链接</string>
     <string name="dashboard_5g">使用 5G 网络</string>
     <string name="tiles_sunshine_mode">阳光模式</string>
-    <string name="system_cc_showpct_style_1">内联</string>
-    <string name="system_cc_showpct_style_2">外显</string>
     <string name="media_control_ground_mode_1">封面艺术</string>
     <string name="media_control_ground_mode_2">模糊封面</string>
     <string name="media_control_ground_mode_3">径向渐变</string>

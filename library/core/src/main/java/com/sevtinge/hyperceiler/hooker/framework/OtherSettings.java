@@ -18,10 +18,32 @@
  */
 package com.sevtinge.hyperceiler.hooker.framework;
 
+import static com.sevtinge.hyperceiler.sub.SubPickerActivity.APP_OPEN_MODE;
+import static com.sevtinge.hyperceiler.sub.SubPickerActivity.LAUNCHER_MODE;
+import static com.sevtinge.hyperceiler.sub.SubPickerActivity.PROCESS_TEXT_MODE;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+
+import androidx.preference.Preference;
+import androidx.preference.SwitchPreference;
+
 import com.sevtinge.hyperceiler.core.R;
 import com.sevtinge.hyperceiler.dashboard.DashboardFragment;
+import com.sevtinge.hyperceiler.prefs.RecommendPreference;
+import com.sevtinge.hyperceiler.sub.SubPickerActivity;
 
 public class OtherSettings extends DashboardFragment {
+
+    Preference mCleanShareApps;
+    Preference mCleanOpenApps;
+    Preference mCleanProcessTextApps;
+    Preference mAutoStart;
+    Preference mClipboardWhitelistApps;
+    SwitchPreference mVerifyDisable;
+    RecommendPreference mRecommend;
+    Handler handler;
 
     @Override
     public int getPreferenceScreenResId() {
@@ -30,5 +52,64 @@ public class OtherSettings extends DashboardFragment {
 
     @Override
     public void initPrefs() {
+        mCleanShareApps = findPreference("prefs_key_system_framework_clean_share_apps");
+        mCleanOpenApps = findPreference("prefs_key_system_framework_clean_open_apps");
+        mCleanProcessTextApps = findPreference("prefs_key_system_framework_clean_process_text_apps");
+        mAutoStart = findPreference("prefs_key_system_framework_auto_start_apps");
+        mClipboardWhitelistApps = findPreference("prefs_key_system_framework_clipboard_whitelist_apps");
+        mVerifyDisable = findPreference("prefs_key_system_framework_disable_verify_can_ve_disabled");
+
+        mAutoStart.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), SubPickerActivity.class);
+            intent.putExtra("mode", LAUNCHER_MODE);
+            intent.putExtra("key", preference.getKey());
+            startActivity(intent);
+            return true;
+        });
+
+        mCleanShareApps.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), SubPickerActivity.class);
+            intent.putExtra("mode", APP_OPEN_MODE);
+            intent.putExtra("key", preference.getKey());
+            startActivity(intent);
+            return true;
+        });
+
+        mCleanOpenApps.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), SubPickerActivity.class);
+            intent.putExtra("mode", APP_OPEN_MODE);
+            intent.putExtra("key", preference.getKey());
+            startActivity(intent);
+            return true;
+        });
+
+        mCleanProcessTextApps.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), SubPickerActivity.class);
+            intent.putExtra("mode", PROCESS_TEXT_MODE);
+            intent.putExtra("key", preference.getKey());
+            startActivity(intent);
+            return true;
+        });
+
+        mClipboardWhitelistApps.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), SubPickerActivity.class);
+            intent.putExtra("mode", LAUNCHER_MODE);
+            intent.putExtra("key", preference.getKey());
+            startActivity(intent);
+            return true;
+        });
+        handler = new Handler(requireContext().getMainLooper());
+
+        Bundle args1 = new Bundle();
+        mRecommend = new RecommendPreference(getContext());
+        getPreferenceScreen().addPreference(mRecommend);
+
+        args1.putString(":settings:fragment_args_key", "prefs_key_system_ui_display_use_aosp_screenshot_enable");
+        mRecommend.addRecommendView(getString(R.string.system_ui_display_use_aosp_screenshot),
+                null,
+                DisplaySettings.class,
+                args1,
+                R.string.system_framework_display_title
+        );
     }
 }

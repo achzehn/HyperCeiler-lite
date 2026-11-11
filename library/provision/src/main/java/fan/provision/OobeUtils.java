@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import com.sevtinge.hyperceiler.provision.R;
 
-import java.security.SecureRandom;
 import java.util.Locale;
 
 import fan.internal.utils.LiteUtils;
@@ -54,8 +53,6 @@ public class OobeUtils {
     public static float HALF_ALPHA = 0.5f;
 
     public static boolean isEndBoot = true;
-
-    private static String sCurrentCode = ""; // 缓存当前的验证码
 
     public static boolean isProvisioned(Context context) {
         return context.getSharedPreferences(PREF_OOBE_STATE, Context.MODE_PRIVATE).getBoolean(KEY_IS_PROVISIONED, false);
@@ -77,7 +74,6 @@ public class OobeUtils {
         context.getSharedPreferences(PREF_OOBE_STATE, Context.MODE_PRIVATE).edit().clear().apply();
         context.getSharedPreferences(PREF_OPERATOR_STATUS, Context.MODE_PRIVATE).edit().clear().apply();
         syncHookAvailability(context, false);
-        sCurrentCode = "";
     }
 
     public static void setProvisioned(Context context, boolean provisioned) {
@@ -194,22 +190,6 @@ public class OobeUtils {
 
     public static boolean needFastAnimation() {
         return !isInternationalBuild();
-    }
-
-    // 只有在需要“刷新”验证码时才调用这个（比如对话框显示前）
-    public static String refreshSecureSixDigit() {
-        SecureRandom sr = new SecureRandom();
-        int num = 100000 + sr.nextInt(900000);
-        sCurrentCode = String.valueOf(num);
-        return sCurrentCode;
-    }
-
-    // 其他地方获取验证码，直接返回缓存的值
-    public static String getSecureSixDigit() {
-        if (sCurrentCode.isEmpty()) {
-            return refreshSecureSixDigit(); // 如果为空则生成一次
-        }
-        return sCurrentCode;
     }
 
     public static Intent getLicenseIntent(String url) {

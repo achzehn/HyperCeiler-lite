@@ -18,6 +18,7 @@
  */
 package com.sevtinge.hyperceiler.provision.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,12 +27,8 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,7 +40,6 @@ import com.sevtinge.hyperceiler.provision.R;
 import com.sevtinge.hyperceiler.provision.text.style.TermsTitleSpan;
 import com.sevtinge.hyperceiler.provision.utils.NoticeProvider;
 import com.sevtinge.hyperceiler.provision.utils.ProvisionManager;
-import com.sevtinge.hyperceiler.provision.widget.SimpleTextWatcher;
 
 import java.util.List;
 
@@ -96,6 +92,7 @@ public class TermsAndStatementFragment extends BaseFragment {
             mNextView.setAlpha(mAgreeCheckBox.isChecked() ? OobeUtils.NO_ALPHA : OobeUtils.HALF_ALPHA);
             mAgreeCheckBox.setOnClickListener(v -> {
                 if (mAgreeCheckBox.isChecked()) {
+                    mAgreeCheckBox.setChecked(false);
                     handleNextClick();
                     mAgreeCheckBox.setChecked(true);
                 }
@@ -177,57 +174,6 @@ public class TermsAndStatementFragment extends BaseFragment {
             .create();
 
         mLoadingDialog.show();
-    }
-
-    private void showVerificationDialog(VerificationCallback callback) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_verification_code_dialog, null);
-        EditText input = view.findViewById(R.id.title);
-
-        AlertDialog dialog = new AlertDialog.Builder(requireActivity())
-            .setTitle(R.string.provision_terms_of_use_verification_code_dialog_title)
-            .setView(view)
-            .setCancelable(false)
-            .setPositiveButton(R.string.provision_terms_of_use_verification_code_dialog_continue, (d, w) -> callback.onResult(true))
-            .setNegativeButton(android.R.string.cancel, (d, w) -> callback.onResult(false))
-            .create();
-
-        dialog.setOnShowListener(d -> {
-            Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            okButton.setEnabled(false);
-
-            input.addTextChangedListener(new SimpleTextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int st, int b, int c) {
-                    // 核心：必须调用 toString()
-                    String inputStr = (s == null) ? "" : s.toString();
-                    String targetStr = OobeUtils.getSecureSixDigit();
-                    // 调试打印（可选）：如果还是不亮，看一眼 Logcat
-                    //Log.d("Verify", "Input: [" + inputStr + "] Target: [" + targetStr + "]");
-
-
-                    okButton.setEnabled(inputStr.equals(targetStr));
-                }
-            });
-        });
-
-        dialog.show();
-    }
-
-    interface VerificationCallback {
-        void onResult(boolean success);
-    }
-
-    private boolean verifyInput(AlertDialog dialog) {
-        EditText editText = dialog.findViewById(R.id.title);
-        if (editText == null) return false;
-
-        String input = editText.getText().toString().trim();
-        return "123456".equals(input);
-    }
-
-
-    public void setWebText(TextView tv, String httpUrl) {
-
     }
 
     public void goNext() {

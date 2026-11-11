@@ -55,8 +55,10 @@ public interface ActivityCallback {
     default Fragment getTargetFragment(Context context, String initialFragmentName, Bundle savedInstanceState) {
         try {
             return Fragment.instantiate(context, initialFragmentName, savedInstanceState);
-        } catch (Exception e) {
-            AndroidLog.e("ActivityCallback", "getTargetFragment failed", e);
+        } catch (Throwable t) {
+            // NoClassDefFoundError / ExceptionInInitializerError 等 Error 同样要拦下，
+            // 否则会在 SubSettings.onCreate 阶段直接导致 "Unable to start activity" 闪退。
+            AndroidLog.e("ActivityCallback", "getTargetFragment failed", t);
             return null;
         }
     }

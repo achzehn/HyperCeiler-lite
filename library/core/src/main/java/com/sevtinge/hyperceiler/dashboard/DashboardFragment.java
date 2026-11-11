@@ -144,10 +144,14 @@ public class DashboardFragment extends SettingsPreferenceFragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.quick_restart && !TextUtils.isEmpty(mQuickRestartPackageName)) {
+                    Activity activity = getActivity();
+                    if (activity == null) return true;
+                    // 功能页的“重启生效”固定使用硬重启；热重载保留在设置页。
                     if ("system".equals(mQuickRestartPackageName)) {
-                        DialogHelper.showRestartSystemDialog(getContext());
+                        DialogHelper.showRestartSystemDialog(activity);
                     } else {
-                        DialogHelper.showRestartDialog(getContext(), mQuickRestartPackageName);
+                        // AppsTool 会按包前缀结束该应用的全部进程。
+                        DialogHelper.showRestartDialog(activity, mQuickRestartPackageName);
                     }
                     return true;
                 }

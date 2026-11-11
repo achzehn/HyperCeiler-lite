@@ -387,7 +387,6 @@
     <string name="system_ui_display_hide_cutout">隱藏螢幕缺口</string>
     <string name="system_ui_display_use_aosp_screenshot">使用原生截屏</string>
     <string name="system_ui_display_use_aosp_screenshot_desc">將截屏應用程式重定向至原生截屏，HyperOS 中的截屏應用程式將不會對截屏操作響應</string>
-    <string name="phone_additional_network_settings">網絡功能輔助菜單</string>
     <string name="system_framework_screen_title">顯示與通知</string>
     <string name="system_framework_core_title">底層</string>
     <string name="system_framework_hook_entry">解鎖導航斷充保護限制</string>
@@ -486,6 +485,11 @@
     <string name="browser_disable_blacklist">禁用網址黑名單</string>
     <string name="browser_enable_debug_environment">啟用預發環境</string>
     <string name="browser_enable_debug_environment_desc">可能導致部分功能失效</string>
+    <string name="browser_only_bing_search_engine">僅保留 Bing 搜尋引擎</string>
+    <string name="browser_only_bing_search_engine_desc">將雲控下發的搜尋引擎配置改寫為僅含 Bing，並設為預設搜尋引擎</string>
+    <string name="quicksearchbox">搜尋</string>
+    <string name="quicksearchbox_only_bing_search_engine">僅保留 Bing 搜尋引擎</string>
+    <string name="quicksearchbox_only_bing_search_engine_desc">將「搜尋」App 的搜尋引擎配置改寫為僅含 Bing，並設為預設搜尋引擎</string>
     <!--Camera-->
     <string name="camera">相機</string>
     <string name="camera_custom_watermark">自定義機型水印</string>
@@ -517,10 +521,6 @@
     <string name="file_explorer_can_selectable">資料夾名稱允許長按選擇操作</string>
     <string name="file_explorer_is_single_line">資料夾名稱以單行顯示</string>
     <string name="file_explorer_unlock_file_parse">解鎖超級文檔</string>
-    <!--Phone-->
-    <string name="incallui">電話</string>
-    <string name="incallui_hide_crbt">隱藏電話彩鈴</string>
-    <string name="incallui_answer_in_head_up">從浮動通知接聽電話時不進入全屏</string>
     <!--Message-->
     <string name="mms">短訊</string>
     <string name="mms_disable_ad">禁用推廣</string>
@@ -531,14 +531,6 @@
     <string name="mms_disable_overseas_risk_tip_desc">禁止展示 \"境外短訊 注意風險\" 提示</string>
     <string name="mms_im_old_device">禁止識别為新裝置</string>
     <string name="mms_verification_code_auto_copy">驗證碼自動寫入剪貼簿</string>
-    <!--Phone Service-->
-    <string name="phone">電話服務</string>
-    <string name="phone_smart_dual_sim">解鎖智能雙卡切換</string>
-    <string name="phone_disable_remove_network_mode">啟用網絡類型選擇菜單</string>
-    <string name="phone_vice_slot_volte">副卡 VoLTE 通話時可聯網</string>
-    <string name="phone_vice_slot_volte_desc">在副卡通話時將會將數據切換至副卡</string>
-    <string name="phone_unlock_voice_link">解鎖通話輔助</string>
-    <string name="phone_unlock_voice_link_desc">僅支持支持 WLAN 通話的 SIM 卡</string>
     <!--Download management program-->
     <string name="downloads">下載管理程序</string>
     <string name="various_fuck_xlDownload">阻止創建 .xlDownload 資料夾</string>
@@ -743,10 +735,8 @@
     <string name="system_ui_control_center_snow_leopard_mode">雪豹模式</string>
     <string name="system_ui_control_center_snow_leopard_mode_desc">禁止全部的音頻輸出。試驗性功能，可能包含不穩定的内容</string>
     <string name="system_ui_control_auto_close">磁貼自動收起</string>
-    <string name="system_ui_control_center_qs_bg_color">背景顏色</string>
     <string name="system_ui_control_center_qs_color">圖示顏色</string>
     <string name="system_ui_control_center_qs_open_color">已啟用磁貼顏色自定義</string>
-    <string name="system_ui_control_center_qs_big_open_color">已啟用卡片磁貼顏色自定義</string>
     <string name="system_ui_control_auto_close_more">開啟後點擊狀態欄磁貼會自動收起狀態欄</string>
     <string name="system_control_center_qs_rows">行數</string>
     <string name="system_control_center_qs_rows_format">%d 行</string>
@@ -788,17 +778,13 @@
     <string name="system_ui_control_center_show_weather">顯示天氣</string>
     <string name="system_ui_control_center_show_weather_city">顯示地區</string>
     <string name="system_ui_control_center_disable_device_managed">隱藏網絡監控提示</string>
-    <string name="system_ui_control_center_hide_edit_botton">隱藏編輯按鈕</string>
-    <string name="system_ui_control_center_tile_super_blur">磁貼高級材質</string>
     <string name="system_ui_control_center_mute_visible_notice">亮屏時静音</string>
     <string name="system_ui_control_center_unimportant_notification">禁止折疊為歷史通知</string>
     <string name="system_ui_control_center_expand_notification">展開通知</string>
     <string name="system_ui_control_center_auto_clean_expand_notification">自動隱藏展開的通知</string>
     <string name="system_ui_control_center_expand_notification_show_time">顯示時長</string>
     <string name="system_ui_control_center_mute_visible_notice_desc">亮屏時彈出通知不播放提示音</string>
-    <string name="system_ui_control_center_rounded_rect">圓角矩形磁貼</string>
     <string name="system_ui_control_center_statusbar_blur">強制背景模糊</string>
-    <string name="system_ui_control_center_rounded_rect_radius">圓角大小</string>
     <string name="system_ui_control_center_fix_tiles_list">補全磁貼列表</string>
     <string name="system_ui_shade_header_gradient_blur">通知與控制中心頭部渐變模糊</string>
     <string name="system_ui_control_center_hide_operator">運營商名稱自定義</string>
@@ -811,25 +797,16 @@
     <string name="system_ui_controlcenter_enable_title">自定義行列數</string>
     <string name="system_control_center_old_qs_grid_columns">折疊面板中的列數</string>
     <string name="system_control_center_old_qs_grid_columns_horizontal">折疊面板中的列數（橫屏）</string>
-    <string name="system_ui_control_center_card_tiles_customization">卡片磁貼自定義</string>
-    <string name="system_ui_control_center_card_tiles_customization_desc">長按並拖拽已添加的卡片可調整順序</string>
-    <string name="system_ui_control_center_card_tiles_customization_add">已添加</string>
-    <string name="system_ui_control_center_card_tiles_customization_not_add">未添加</string>
     <string name="system_ui_control_center_unlock_all_focus">移除焦點通知白名單</string>
     <string name="system_ui_control_center_remove_notif_num_limit">移除通知數量限制</string>
     <string name="system_ui_control_center_remove_notif_num_limit_desc">允許顯示 10 條或 17 條及以上的通知</string>
     <string name="system_ui_control_center_opt_notification_element_background_color">優化焦點通知背景混色</string>
-    <string name="system_ui_control_center_opt_notification_element_background_color_desc">恢復為普通通知混色樣式，手電筒焦點通知還原需要同時勾選系統界面組件作用域</string>
+    <string name="system_ui_control_center_opt_notification_element_background_color_desc">恢復為普通通知混色樣式</string>
     <string name="system_ui_control_center_opt_notification_element_background_color_advanced">增強優化焦點通知背景混色</string>
     <string name="system_ui_control_center_opt_notification_element_background_color_advanced_desc">可能與全屏 AOD 不兼容</string>
-    <string name="system_ui_control_center_qs_brightness_top_value_show_title">亮度值顯示</string>
-    <string name="system_ui_control_center_qs_volume_top_value_show_title">音量值顯示</string>
     <string name="system_ui_control_center_zen_fix">勿擾模式修復</string>
     <string name="system_ui_control_center_zen_fix_desc">修復部分裝置在勿擾模式依舊響鈴</string>
     <string name="system_ui_other_title">其他</string>
-    <string name="system_ui_disable_volume">原生音量條</string>
-    <string name="system_ui_disable_power">原生關機菜單</string>
-    <string name="system_ui_disable_volume_desc">针對 HyperOS 音量條的修改無法作用於原生音量條</string>
     <string name="system_ui_unlock_clipboard">解鎖原生剪貼簿編輯器</string>
     <string name="system_ui_unlock_clipboard_desc">試驗性功能，會導致 HyperOS 的編輯器一並彈出</string>
     <string name="system_ui_another_title">其他</string>
@@ -839,13 +816,6 @@
     <string name="system_ui_disable_infinitymode_gesture">禁用無極缩放手勢</string>
     <string name="system_ui_disable_infinitymode_gesture_sum">僅供平板使用</string>
     <string name="system_ui_disable_bottombar">隱藏小窗的手勢提示線</string>
-    <string name="system_ui_others_pct_title">數據顯示</string>
-    <string name="system_cc_showpct_style">數據百分比顯示樣式</string>
-    <string name="system_showpct_title">顯示亮度百分比</string>
-    <string name="system_cc_volume_showpct_title">顯示音量百分比</string>
-    <string name="system_ui_others_showpct_top">頂部邊距</string>
-    <string name="system_ui_others_showpct_top_desc">百分比提示框距熒幕頂部的距離</string>
-    <string name="system_showpct_use_blur">使用高級材質效果</string>
     <string name="system_ui_notification_freeform">更多應用程式通知欄下拉打開小窗</string>
     <string name="system_ui_notification_freeform_desc">可能不支持 Mi Push 推送的通知</string>
     <string name="system_ui_monet_title">主題色</string>
@@ -853,17 +823,10 @@
     <string name="system_ui_monet_overlay_custom_desc">自定義主題顏色，而不是從桌布中提取顏色</string>
     <string name="system_ui_monet_overlay_custom_color">選擇主題色</string>
     <string name="system_ui_qs_label">快捷開關標簽</string>
+    <string name="ic_qs_title_flashlight">手電筒</string>
     <string name="system_ui_notification_title">通知</string>
     <string name="system_ui_other_notification_fix">禁用通知白名單</string>
-    <string name="system_ui_other_default_plugin_theme">解除高級材質模糊限制</string>
-    <string name="system_ui_other_default_plugin_theme_desc">解除系統界面組件對第三方主題預設禁用的高級材質模糊</string>
-    <string name="system_ui_plugin_volume_title">音量條</string>
-    <string name="system_ui_volume_collpased_column_press">按壓展開二級音量條</string>
-    <string name="system_ui_volume_collpased_column_press_desc">啟用此功能後，會關閉展開按鈕</string>
-    <string name="system_ui_volume_hide_foot_button">隱藏静音和勿擾按鈕</string>
-    <string name="system_ui_plugin_enable_volume_blur">音量條模糊</string>
     <string name="system_ui_move_log_to_miui">將 statusbar_gestures.dat 移動到 MIUI 目錄</string>
-    <string name="system_ui_plugin_enable_volume_blur_desc">可能存在 GPU 負載较高的情况</string>
     <!--Telecom-->
     <string name="telecom">通話管理</string>
     <string name="scam_reminder_bypass_caption">允許直接撥打呼叫轉移 MMI 碼</string>
@@ -924,9 +887,6 @@
     <string name="theme_manager_diable_ads_desc">將 \"猜你喜歡\" 的廣告替換為空白卡片，其餘位置的廣告將完全移除</string>
     <string name="theme_manager_allow_download_more">允許在未登錄的情况下下載更多内容</string>
     <string name="theme_manager_allow_download_more_desc">允許在未登錄的情况下下載超過 10 個内容</string>
-    <!--remotecontroller-->
-    <string name="remotecontroller">萬能遥控</string>
-    <string name="remotecontroller_disable_ad">禁用推廣</string>
     <!--Updater-->
     <string name="updater">系統更新</string>
     <string name="updater_enable_miui_version">啟用偽裝版本</string>
@@ -1620,17 +1580,6 @@
     <string name="operator_fix_none">不修復</string>
     <string name="operator_fix_1">方法一</string>
     <string name="operator_fix_2">方法二（推薦）</string>
-    <string name="ic_qs_title_wifi">WLAN</string>
-    <string name="ic_qs_title_cellular">流動數據</string>
-    <string name="ic_qs_title_bluetooth">藍牙</string>
-    <string name="ic_qs_title_gps">位置訊息</string>
-    <string name="ic_qs_title_hotspot">熱點</string>
-    <string name="ic_qs_title_flashlight">手電筒</string>
-    <string name="ic_qs_title_settings">設定</string>
-    <string name="ic_qs_title_airplane">飛行模式</string>
-    <string name="ic_qs_title_autobrightness">自動亮度</string>
-    <string name="ic_qs_title_vowifi1">WLAN通話\nSIM1</string>
-    <string name="ic_qs_title_vowifi2">WLAN通話\nSIM2</string>
     <string name="custom_hook_new">添加 Hook</string>
     <string name="custom_hook_mode">選擇模式</string>
     <string name="open_source">開源項目</string>
@@ -1678,7 +1627,6 @@
     <string name="health">小米運動健康</string>
     <string name="health_disable_splash_ad">停用開幕廣告</string>
     <string name="phrase">剪貼簿與常用語</string>
-    <string name="ic_qs_title_nfc">NFC</string>
     <string name="development_tools">除錯</string>
     <string name="development_system">管理</string>
     <string name="development_cache">緩存與日誌</string>

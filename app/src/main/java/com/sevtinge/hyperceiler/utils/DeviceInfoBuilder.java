@@ -131,7 +131,6 @@ public class DeviceInfoBuilder {
             }
             String loggerStatus = IS_LOGGER_ALIVE + ", " + formatLoggerStatusDetail();
             propertiesCheck.put("LoggerStatus", loggerStatus);
-
         } catch (Exception e) {
             AndroidLog.w(TAG, "Failed to collect check info", e);
         }

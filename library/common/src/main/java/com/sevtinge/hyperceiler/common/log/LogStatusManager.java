@@ -81,9 +81,17 @@ public class LogStatusManager {
 
                 // 检查日志服务存活状态
                 IS_LOGGER_ALIVE = LoggerHealthChecker.isLoggerAlive();
-                notifyListeners();
+            } catch (Throwable t) {
+                IS_LOGGER_ALIVE = false;
+                AndroidLog.e("LogStatusManager", "Log health check failed", t);
             } finally {
-                healthCheckLatch.countDown();
+                try {
+                    notifyListeners();
+                } catch (Throwable t) {
+                    AndroidLog.e("LogStatusManager", "Log health check listener failed", t);
+                } finally {
+                    healthCheckLatch.countDown();
+                }
             }
         }, "LogHealthCheck").start();
     }
@@ -163,6 +171,19 @@ public class LogStatusManager {
             );
             hookLogLevelObserverContext = targetContext;
             syncLogLevelFromPrefs();
+        }
+    }
+
+    public static void detachHookLogLevelObserver() {
+        synchronized (logLevelLock) {
+            if (hookLogLevelObserver != null && hookLogLevelObserverContext != null) {
+                try {
+                    hookLogLevelObserverContext.getContentResolver().unregisterContentObserver(hookLogLevelObserver);
+                } catch (Throwable ignored) {
+                }
+            }
+            hookLogLevelObserverContext = null;
+            hookLogLevelObserver = null;
         }
     }
 

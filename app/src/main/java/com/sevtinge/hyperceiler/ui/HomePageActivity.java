@@ -24,6 +24,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.sevtinge.hyperceiler.R;
 import com.sevtinge.hyperceiler.about.AboutPageFragment;
 import com.sevtinge.hyperceiler.about.AboutSettingsFragment;
+import com.sevtinge.hyperceiler.common.log.AndroidLog;
 import com.sevtinge.hyperceiler.common.utils.AppSettingsStore;
 import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.common.utils.shell.IResult;
@@ -36,11 +37,13 @@ import com.sevtinge.hyperceiler.home.task.AppInitializer;
 import com.sevtinge.hyperceiler.home.widget.NavigationStyle;
 import com.sevtinge.hyperceiler.home.widget.SwitchManager;
 import com.sevtinge.hyperceiler.home.widget.SwitchMediator;
+import com.sevtinge.hyperceiler.provision.utils.NoticeProvider;
 import com.sevtinge.hyperceiler.provision.utils.ProvisionManager;
 import com.sevtinge.hyperceiler.settings.SettingsFragment;
 import com.sevtinge.hyperceiler.settings.SettingsPageFragment;
 import com.sevtinge.hyperceiler.utils.NoticeProcessor;
 import com.sevtinge.hyperceiler.utils.PersistConfig;
+import com.sevtinge.hyperceiler.utils.XposedActivateHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,10 +188,12 @@ public class HomePageActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         PageDecorator.onResume();
+        if (mContentAdapter != null) XposedActivateHelper.init(this);
     }
 
     @Override
     protected void onPause() {
+        XposedActivateHelper.clear(this);
         super.onPause();
         PageDecorator.onPause();
     }
@@ -203,6 +208,7 @@ public class HomePageActivity extends AppCompatActivity
 
     @Override
     public void onDestroy() {
+        XposedActivateHelper.clear(this);
         super.onDestroy();
     }
 

@@ -4,15 +4,13 @@ import static com.sevtinge.hyperceiler.libhook.utils.api.DeviceHelper.System.isA
 import static com.sevtinge.hyperceiler.libhook.utils.api.DeviceHelper.System.isMoreAndroidVersion;
 
 import com.sevtinge.hyperceiler.common.log.XposedLog;
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils;
-
-import io.github.libxposed.api.XposedModuleInterface;
+import com.sevtinge.hyperceiler.libhook.base.PackageTarget;
 
 public class VerificationAgentPatch extends CorePatchHelper {
 
     private static final String TAG = "VerificationAgentPatch";
 
-    public void init(XposedModuleInterface.SystemServerStartingParam lpparam) {
+    public void init(PackageTarget lpparam) {
         // Android 11+
         try {
             hookAllMethods(getIsVerificationEnabledClass(lpparam.getClassLoader()), "isVerificationEnabled", new ReturnConstant("prefs_key_system_framework_disable_verification_agent", false));
@@ -23,10 +21,10 @@ public class VerificationAgentPatch extends CorePatchHelper {
 
     Class<?> getIsVerificationEnabledClass(ClassLoader classLoader) {
         if (isMoreAndroidVersion(34)) {
-            return EzxHelpUtils.findClass("com.android.server.pm.VerifyingSession", classLoader);
+            return com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("com.android.server.pm.VerifyingSession", classLoader);
         } else if (isAndroidVersion(33)) {
-            return EzxHelpUtils.findClass("com.android.server.pm.VerificationParams", classLoader);
+            return com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("com.android.server.pm.VerificationParams", classLoader);
         }
-        return EzxHelpUtils.findClass("com.android.server.pm.PackageManagerService", classLoader);
+        return com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("com.android.server.pm.PackageManagerService", classLoader);
     }
 }

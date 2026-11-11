@@ -18,23 +18,6 @@
   ~ Copyright (C) 2023-2026 HyperCeiler Contributions
   -->
 <resources>
-    <string-array name="xposed_scope">
-        <item>android</item> <!--系统框架-->
-        <item>com.android.browser</item> <!--浏览器-->
-        <item>com.android.quicksearchbox</item> <!--搜索-->
-        <item>com.miui.backup</item> <!--备份-->
-        <item>com.miui.packageinstaller</item> <!--应用包管理组件-->
-        <item>com.miui.securitycenter</item> <!--安全服务-->
-        <item>com.xiaomi.barrage</item> <!--弹幕通知-->
-        <item>com.xiaomi.market</item> <!--应用商店-->
-        <item>com.xiaomi.trustservice</item> <!--MiTrustService-->
-        <item>com.xiaomi.xmsf</item> <!--小米服务框架-->
-        <item>tv.danmaku.bili</item> <!--哔哩哔哩-->
-        <item>com.bilibili.app.blue</item> <!--哔哩哔哩蓝版-->
-        <item>com.bilibili.app.in</item> <!--哔哩哔哩国际版-->
-        <item>tv.danmaku.bilibilihd</item> <!--哔哩哔哩HD-->
-    </string-array>
-
     <array name="miui_freeform_black_list">
         <item>ab.cd.xyz</item>
     </array>

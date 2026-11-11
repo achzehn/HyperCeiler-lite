@@ -443,32 +443,6 @@
         <item>2</item>
     </string-array>
 
-    <string-array name="weather_device_level">
-        <item>@string/array_default</item>
-        <item>@string/weather_device_level_title_low</item>
-        <item>@string/weather_device_level_title_middle</item>
-        <item>@string/weather_device_level_title_high</item>
-    </string-array>
-
-    <string-array name="weather_device_level_value">
-        <item>3</item>
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="weather_card_display_type">
-        <item>@string/array_default</item>
-        <item>@string/weather_card_display_type_title_2</item>
-        <item>@string/weather_card_display_type_title_3</item>
-    </string-array>
-
-    <string-array name="weather_card_display_type_value">
-        <item>0</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
     <string-array name="lock_screen_bottom_left_button">
         <item>@string/array_default</item>
         <item>@string/array_hide</item>
@@ -769,6 +743,28 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="home_dock_unlock_style">
+        <item>@string/home_dock_unlock_style_daybreak</item>
+        <item>@string/home_dock_unlock_style_depth_flip</item>
+        <item>@string/home_dock_unlock_style_gale</item>
+        <item>@string/home_dock_unlock_style_orbit_sweep</item>
+        <item>@string/home_dock_unlock_style_ripple</item>
+        <item>@string/home_dock_unlock_style_perspective_fold</item>
+        <item>@string/home_dock_unlock_style_capsule_fission</item>
+        <item>@string/home_dock_unlock_style_auto_aim</item>
+    </string-array>
+
+    <string-array name="home_dock_unlock_style_value">
+        <item>daybreak</item>
+        <item>depth_flip</item>
+        <item>gale</item>
+        <item>orbit_sweep</item>
+        <item>ripple</item>
+        <item>perspective_fold</item>
+        <item>capsule_fission</item>
+        <item>auto_aim</item>
+    </string-array>
+
     <string-array name="blur_switch_value_new">
         <item>0</item>
         <item>1</item>
@@ -827,32 +823,6 @@
         <item>2</item>
     </string-array>
 
-    <string-array name="others_pct_switch_style">
-        <item>@string/array_close</item>
-        <item>@string/system_cc_showpct_style_1</item>
-        <item>@string/system_cc_showpct_style_2</item>
-    </string-array>
-
-    <string-array name="others_pct_switch_style_value">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="gallery_backup_server_entries">
-        <item>@string/array_default</item>
-        <item>@string/gallery_backup_server_xiaomi</item>
-        <item>@string/gallery_backup_server_google</item>
-        <item>@string/gallery_backup_server_onedrive</item>
-    </string-array>
-
-    <string-array name="gallery_backup_server_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
     <string-array name="theme_manager_version_code">
         <item>@string/array_default</item>
         <item>MIUI 11</item>
@@ -871,51 +841,6 @@
         <item>130</item>
         <item>140</item>
         <item>150</item>
-    </string-array>
-
-    <string-array name="card_tile_list">
-        <item>wifi</item>
-        <item>cell</item>
-        <item>bt</item>
-        <item>gps</item>
-        <item>nfc</item>
-        <item>hotspot</item>
-        <item>flashlight</item>
-        <item>settings</item>
-        <item>airplane</item>
-        <item>autobrightness</item>
-        <item>vowifi1</item>
-        <item>vowifi2</item>
-    </string-array>
-
-    <integer-array name="card_tile_icon_list">
-        <item>@drawable/ic_cc_qs_wifi</item>
-        <item>@drawable/ic_cc_qs_cellular</item>
-        <item>@drawable/ic_cc_qs_bluetooth</item>
-        <item>@drawable/ic_cc_qs_gps</item>
-        <item>@drawable/ic_cc_qs_nfc</item>
-        <item>@drawable/ic_cc_qs_hotspot</item>
-        <item>@drawable/ic_cc_qs_flashlight</item>
-        <item>@drawable/ic_cc_qs_settings</item>
-        <item>@drawable/ic_cc_qs_airplane</item>
-        <item>@drawable/ic_cc_qs_auto_brightness</item>
-        <item>@drawable/ic_cc_qs_vowifi</item>
-        <item>@drawable/ic_cc_qs_vowifi</item>
-    </integer-array>
-
-    <string-array name="card_tile_title_list">
-        <item>@string/ic_qs_title_wifi</item>
-        <item>@string/ic_qs_title_cellular</item>
-        <item>@string/ic_qs_title_bluetooth</item>
-        <item>@string/ic_qs_title_gps</item>
-        <item>@string/ic_qs_title_nfc</item>
-        <item>@string/ic_qs_title_hotspot</item>
-        <item>@string/ic_qs_title_flashlight</item>
-        <item>@string/ic_qs_title_settings</item>
-        <item>@string/ic_qs_title_airplane</item>
-        <item>@string/ic_qs_title_autobrightness</item>
-        <item>@string/ic_qs_title_vowifi1</item>
-        <item>@string/ic_qs_title_vowifi2</item>
     </string-array>
 
     <array name="my_card_stroke_gradient_colors_light">
@@ -1031,5 +956,35 @@
         <item>dolby</item>
         <item>misound</item>
         <item>keep</item>
+    </string-array>
+
+    <string-array name="system_ui_statusbar_battery_detail_content_entries">
+        <item>@string/array_temp_current</item>
+        <item>@string/array_power</item>
+        <item>@string/array_current</item>
+        <item>@string/array_temp_power</item>
+        <item>@string/array_power_current</item>
+    </string-array>
+
+    <string-array name="system_ui_statusbar_battery_detail_content_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="system_ui_statusbar_battery_detail_hide_unit_entries">
+        <item>@string/array_hide_unit_none</item>
+        <item>@string/array_hide_unit_all</item>
+        <item>@string/array_hide_unit_temp</item>
+        <item>@string/array_hide_unit_power_current</item>
+    </string-array>
+
+    <string-array name="system_ui_statusbar_battery_detail_hide_unit_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 </resources>

@@ -26,6 +26,8 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.sevtinge.hyperceiler.core.R;
 import com.sevtinge.hyperceiler.dashboard.base.SettingsBaseActivity;
+import com.sevtinge.hyperceiler.hooker.framework.OtherSettings;
+import com.sevtinge.hyperceiler.hooker.various.AlertDialogSettings;
 import com.sevtinge.hyperceiler.utils.PersistConfig;
 
 import fan.preference.PreferenceFragment;
@@ -44,7 +46,9 @@ public abstract class SettingsActivity extends SettingsBaseActivity
 
     @Override
     public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, @NonNull Preference pref) {
-        boolean isAddPreferenceKey = false;
+        boolean isAddPreferenceKey = caller instanceof OtherSettings ||
+            caller instanceof AlertDialogSettings;
+
         onStartSettingsForArguments(pref, isAddPreferenceKey);
         return true;
     }

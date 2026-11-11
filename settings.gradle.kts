@@ -11,7 +11,28 @@ fun loadGprCredentials(): GprCredentials {
         return GprCredentials(envUser, envKey)
     }
 
-    return GprCredentials("", "")
+    // 从 signing.properties 读取
+    val propsFile = File(rootDir, "signing.properties")
+    if (!propsFile.exists()) {
+        throw GradleException(
+            "Missing GitHub credentials. Please either:\n" +
+            "  1. Set GIT_ACTOR and GIT_TOKEN environment variables, or\n" +
+            "  2. Create 'signing.properties' with 'gpr.user' and 'gpr.key'"
+        )
+    }
+
+    val props = java.util.Properties().apply {
+        propsFile.inputStream().use { load(it) }
+    }
+
+    val user = props.getProperty("gpr.user")?.takeIf { it.isNotBlank() }
+    val key = props.getProperty("gpr.key")?.takeIf { it.isNotBlank() }
+
+    if (user == null || key == null) {
+        throw GradleException("'gpr.user' and 'gpr.key' must be set in 'signing.properties'")
+    }
+
+    return GprCredentials(user, key)
 }
 
 val gprCredentials by lazy { loadGprCredentials() }
@@ -29,9 +50,11 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/google/") }
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
-        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin/") }
+        // Mirrors first: several artifacts on google()/mavenCentral() are redirected
+        // to github.com release assets, which is unreachable here and stalls the build.
+        maven("https://maven.aliyun.com/repository/public")
+        maven("https://maven.aliyun.com/repository/google")
+        maven("https://maven.aliyun.com/repository/gradle-plugin")
         google()
         mavenCentral()
         mavenLocal()
@@ -52,7 +75,7 @@ include(
     "app",
     // ":library:hook",
     ":library:libhook",
-    ":library:xposed-api-101",
+    // ":library:xposed-api-101",
     ":library:core",
     ":library:provision",
     ":library:common",

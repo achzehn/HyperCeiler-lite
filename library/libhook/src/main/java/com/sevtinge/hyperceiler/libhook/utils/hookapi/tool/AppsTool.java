@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -37,27 +36,19 @@ import android.net.Uri;
 import android.os.FileObserver;
 import android.os.UserHandle;
 import android.util.LruCache;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.sevtinge.hyperceiler.common.log.AndroidLog;
-import com.sevtinge.hyperceiler.common.log.XposedLog;
-import com.sevtinge.hyperceiler.common.utils.PrefsBridge;
 import com.sevtinge.hyperceiler.common.utils.api.ProjectApi;
 import com.sevtinge.hyperceiler.common.utils.shell.ShellInit;
-import com.sevtinge.hyperceiler.libhook.R;
+import com.sevtinge.hyperceiler.libhook.base.PackageTarget;
 import com.sevtinge.hyperceiler.libhook.utils.api.ContextUtils;
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.blur.MiBlurUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import io.github.libxposed.api.XposedModuleInterface;
+import io.github.lingqiqi5211.ezhooktool.xposed.EzResources;
 
 public class AppsTool {
 
@@ -76,9 +67,6 @@ public class AppsTool {
         }
     };
 
-    @SuppressLint("StaticFieldLeak")
-    public static TextView mPct = null;
-
     private static final FileObserver sFileObserver = null;
     private static final Executor sPermissionExecutor = Executors.newSingleThreadExecutor();
 
@@ -87,7 +75,8 @@ public class AppsTool {
     }
 
     public static Resources getModuleRes(Context context) {
-        return ResourcesTool.getInstance().loadModuleRes(context);
+        EzResources.inject(context);
+        return context.getResources();
     }
 
     public static Context findContext(@ContextUtils.Duration int flag) {
@@ -104,18 +93,18 @@ public class AppsTool {
     }
 
     private static Context currentApplication() {
-        Class<?> clazz = EzxHelpUtils.findClass("android.app.ActivityThread", null);
-        return (Application) EzxHelpUtils.callStaticMethod(clazz, "currentApplication");
+        Class<?> clazz = com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("android.app.ActivityThread", null);
+        return (Application) com.sevtinge.hyperceiler.libhook.base.BaseHook.callStaticMethod(clazz, "currentApplication");
     }
 
     private static Context getSystemContext() {
-        Class<?> clazz = EzxHelpUtils.findClass("android.app.ActivityThread", null);
-        Object thread = EzxHelpUtils.callStaticMethod(clazz, "currentActivityThread");
+        Class<?> clazz = com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("android.app.ActivityThread", null);
+        Object thread = com.sevtinge.hyperceiler.libhook.base.BaseHook.callStaticMethod(clazz, "currentActivityThread");
         if (thread == null) return null;
 
-        Context context = (Context) EzxHelpUtils.callMethod(thread, "getSystemContext");
+        Context context = (Context) com.sevtinge.hyperceiler.libhook.base.BaseHook.callMethod(thread, "getSystemContext");
         if (context == null) {
-            context = (Context) EzxHelpUtils.callMethod(thread, "getSystemUiContext");
+            context = (Context) com.sevtinge.hyperceiler.libhook.base.BaseHook.callMethod(thread, "getSystemUiContext");
         }
         return context;
     }
@@ -153,69 +142,6 @@ public class AppsTool {
         title.getPaint().setShader(shimmer);
     }
 
-    public static void initPct(ViewGroup container, int source) {
-        Resources res = container.getContext().getResources();
-        if (mPct == null) {
-            Context context = container.getContext();
-            float density = res.getDisplayMetrics().density;
-
-            mPct = new TextView(context);
-            mPct.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
-            mPct.setGravity(Gravity.CENTER);
-
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            lp.topMargin = Math.round(PrefsBridge.getInt("system_ui_others_showpct_top", 54) * density *
-                (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 0.7f : 1.0f));
-            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
-            mPct.setPadding(
-                Math.round(20 * density),
-                Math.round(10 * density),
-                Math.round(18 * density),
-                Math.round(12 * density)
-            );
-            mPct.setLayoutParams(lp);
-
-            try {
-                Resources modRes = getModuleRes(context);
-                mPct.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFFFFFFF")));
-                mPct.setBackground(modRes.getDrawable(R.drawable.input_background, context.getTheme()));
-            } catch (Throwable err) {
-                XposedLog.e("ShowPct", err);
-            }
-
-            if (PrefsBridge.getBoolean("system_showpct_use_blur")) {
-                try {
-                    int blurRadius = isDarkMode(getSystemContext()) ? 220 : 320;
-                    int alpha = isDarkMode(getSystemContext()) ? 140 : 160;
-
-                    MiBlurUtils.clearMiBackgroundBlendColor(mPct);
-                    MiBlurUtils.setPassWindowBlurEnabled(mPct, true);
-                    MiBlurUtils.setMiViewBlurMode(mPct, 1);
-                    MiBlurUtils.setMiBackgroundBlurMode(mPct, 1);
-                    MiBlurUtils.setMiBackgroundBlurRadius(mPct, blurRadius);
-                    MiBlurUtils.addMiBackgroundBlendColor(mPct, Color.argb(alpha, 0, 0, 0), 101);
-                } catch (Throwable e) {
-                    XposedLog.e("ShowPct", e);
-                }
-            }
-            container.addView(mPct);
-        }
-        mPct.setTag(source);
-        mPct.setVisibility(View.GONE);
-    }
-
-    public static void removePct(TextView mPctText) {
-        if (mPctText != null) {
-            mPctText.setVisibility(View.GONE);
-            ViewGroup p = (ViewGroup) mPctText.getParent();
-            p.removeView(mPctText);
-            mPct = null;
-        }
-    }
-
     public static class MimeType {
         public static int IMAGE = 1;
         public static int AUDIO = 2;
@@ -240,24 +166,24 @@ public class AppsTool {
         return stackTrace[4].getMethodName();
     }
 
-    public static String getPackageVersionName(XposedModuleInterface.PackageReadyParam param) {
+    public static String getPackageVersionName(PackageTarget target) {
         try {
             PackageManager pm = findContext(FlAG_ONLY_ANDROID).getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(param.getPackageName(), 0);
+            PackageInfo pi = pm.getPackageInfo(target.getPackageName(), 0);
             return pi != null ? pi.versionName : "";
         } catch (Throwable e) {
-            AndroidLog.e("getPackageVersionName", param.getPackageName(), e.toString());
+            AndroidLog.e("getPackageVersionName", target.getPackageName(), e.toString());
             return "";
         }
     }
 
-    public static int getPackageVersionCode(XposedModuleInterface.PackageReadyParam param) {
+    public static int getPackageVersionCode(PackageTarget target) {
         try {
             PackageManager pm = findContext(FlAG_ONLY_ANDROID).getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(param.getPackageName(), 0);
+            PackageInfo pi = pm.getPackageInfo(target.getPackageName(), 0);
             return Math.toIntExact(pi != null ? pi.getLongVersionCode() : -1);
         } catch (Throwable e) {
-            AndroidLog.e("getPackageVersionCode", param.getPackageName(), e.toString());
+            AndroidLog.e("getPackageVersionCode", target.getPackageName(), e.toString());
             return -1;
         }
     }
@@ -275,8 +201,8 @@ public class AppsTool {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 intent.setData(Uri.parse("package:" + pkg));
                 if (user != 0) {
-                    Object userHandle = EzxHelpUtils.newInstance(UserHandle.class, user);
-                    EzxHelpUtils.callMethod(context, "startActivityAsUser", intent, userHandle);
+                    Object userHandle = com.sevtinge.hyperceiler.libhook.base.BaseHook.newInstance(UserHandle.class, user);
+                    com.sevtinge.hyperceiler.libhook.base.BaseHook.callMethod(context, "startActivityAsUser", intent, userHandle);
                 } else {
                     context.startActivity(intent);
                 }

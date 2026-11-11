@@ -1,12 +1,12 @@
 package com.sevtinge.hyperceiler.libhook.rules.systemframework.others;
 
-import static com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils.deoptimizeMethods;
+import static com.sevtinge.hyperceiler.libhook.base.BaseHook.deoptimizeMethods;
 
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 
 import com.sevtinge.hyperceiler.common.log.XposedLog;
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils;
+import com.sevtinge.hyperceiler.libhook.base.PackageTarget;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +16,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.XposedModuleInterface;
 
 public class FlagSecure {
 
@@ -29,7 +28,7 @@ public class FlagSecure {
         Object intercept(XposedInterface.Chain chain) throws Throwable;
     }
 
-    public void onLoad(XposedModuleInterface.SystemServerStartingParam lpparam) {
+    public void onLoad(PackageTarget lpparam) {
         var classLoader = lpparam.getClassLoader();
 
         try {
@@ -256,7 +255,7 @@ public class FlagSecure {
     }
 
     private void hook(Method method, ChainHooker hooker) {
-        EzxHelpUtils.chain(method, new XposedInterface.Hooker() {
+        com.sevtinge.hyperceiler.libhook.base.BaseHook.chain(method, new XposedInterface.Hooker() {
             @Override
             public Object intercept(XposedInterface.Chain chain) throws Throwable {
                 return hooker.intercept(chain);

@@ -156,7 +156,29 @@
     <string name="development_close_log_alert_dialog">Disable logger live alert dialog</string>
     <string name="development_fix_lsposed_log">Try to fix LSPosed log service</string>
     <string name="development_clear_app_properties">Reset the Prop for services related to HyperCeiler</string>
+    <string name="settings_hot_reload">Hot reload process</string>
+    <string name="settings_hot_reload_desc">Select framework-scope apps and hot reload all of their currently injected processes. Requires Xposed framework API 102 or higher.</string>
+    <string name="settings_hot_reload_unsupported">Hot reload is not supported on the current Xposed framework. Requires libxposed API 102 or higher.</string>
+    <string name="settings_hot_reload_no_targets">No running hooked process to reload.</string>
+    <string name="settings_hot_reload_pick">Pick a hooked process to reload</string>
+    <string name="settings_hot_reload_pick_subtitle">Tap a process to perform an in-process hot reload of this module.</string>
+    <string name="settings_hot_reload_target_meta">PID %1$d  ·  UID %2$d  ·  v%3$d</string>
+    <string name="settings_hot_reload_in_progress">Reloading %1$s ...</string>
+    <string name="settings_hot_reload_result">Process: %1$s\nStatus: %2$s\nMessage: %3$s</string>
+    <string name="settings_hot_reload_pick_apps">Select apps to hot reload</string>
+    <string name="settings_hot_reload_pick_apps_subtitle">Only apps enabled in the framework scope are shown. All currently injected processes of selected apps will reload.</string>
+    <string name="settings_hot_reload_system_scope">System framework</string>
+    <string name="settings_hot_reload_action">Hot reload</string>
+    <string name="settings_hot_reload_no_scoped_apps">There are no installed apps enabled in the framework scope.</string>
+    <string name="settings_hot_reload_no_apps_selected">Select at least one app.</string>
+    <string name="settings_hot_reload_batch_in_progress">Reloading %1$d app(s) ...</string>
+    <string name="settings_hot_reload_batch_no_running_targets">No running hooked process was found for the %1$d selected app(s).</string>
+    <string name="settings_hot_reload_batch_result">Hot reload finished: %1$d/%2$d processes succeeded; %3$d failed; %4$d selected app(s) had no running process.</string>
+    <string name="settings_hot_reload_batch_result_timeout">Hot reload timed out: %1$d/%2$d processes succeeded; %3$d failed or timed out; %4$d selected app(s) had no running process.</string>
+    <string name="settings_hot_reload_batch_failure_detail">First failure (%1$s): %2$s</string>
+    <string name="settings_hot_reload_batch_service_error">Hot reload could not start: %1$s</string>
     <string name="settings_show_title">Show</string>
+    <string name="settings_module_title">Module</string>
     <string name="settings_data_title">Backup and restore</string>
     <string name="settings_bug_title">Troubleshooting</string>
     <string name="settings_debug_title">Debug</string>
@@ -445,7 +467,6 @@
     <string name="system_ui_display_hide_cutout">Hide display cutout</string>
     <string name="system_ui_display_use_aosp_screenshot">Use AOSP screenshot</string>
     <string name="system_ui_display_use_aosp_screenshot_desc">Redirect the screenshot app to use the AOSP screenshot capture. The screenshot app in HyperOS won\'t respond to the screenshot operation.</string>
-    <string name="phone_additional_network_settings">Additional network settings</string>
     <string name="system_framework_screen_title">Display &amp; notifications</string>
     <string name="system_framework_core_title">Core underneath</string>
     <string name="system_framework_hook_entry">Unlock navigation auto-disconnect protection limit</string>
@@ -473,8 +494,6 @@
     <string name="system_framework_auto_start_apps_desc">The selected app won\'t be restricted by the restriction chain and can start automatically</string>
     <string name="system_other_flag_secure">Allow screenshot</string>
     <string name="system_other_flag_secure_desc">Allows screenshots and screen recordings of any app</string>
-    <string name="system_framework_disable_keep_screen_on">Disable keep screen on</string>
-    <string name="system_framework_disable_keep_screen_on_desc">Prevent apps from keeping the screen on, ignore FLAG_KEEP_SCREEN_ON flag</string>
     <string name="system_other_delete_on_post_notification">Remove pop-up windows notification</string>
     <string name="system_other_delete_on_post_notification_desc">Remove \"This app is displaying over other apps\" notification</string>
     <string name="system_framework_share_menu_test">Share menu test</string>
@@ -557,6 +576,11 @@
     <string name="browser_disable_blacklist">Disable URL blacklist</string>
     <string name="browser_enable_debug_environment">Enable debug environment</string>
     <string name="browser_enable_debug_environment_desc">This may result in some functions being invalid</string>
+    <string name="browser_only_bing_search_engine">Only keep Bing search engine</string>
+    <string name="browser_only_bing_search_engine_desc">Rewrite the cloud-controlled search engine configuration to keep only Bing and set it as the default engine</string>
+    <string name="quicksearchbox">Search</string>
+    <string name="quicksearchbox_only_bing_search_engine">Only keep Bing search engine</string>
+    <string name="quicksearchbox_only_bing_search_engine_desc">Rewrite the search engine configuration of the Search app to keep only Bing and set it as the default engine</string>
     <!--Camera-->
     <string name="camera">Camera</string>
     <string name="camera_custom_watermark">Custom device watermark</string>
@@ -588,10 +612,6 @@
     <string name="file_explorer_can_selectable">Allow directly long press folder name and do action</string>
     <string name="file_explorer_is_single_line">Show folder name in single line</string>
     <string name="file_explorer_unlock_file_parse">Unlock Online files</string>
-    <!--Phone-->
-    <string name="incallui">Phone</string>
-    <string name="incallui_hide_crbt">Hide personalized calling ui video</string>
-    <string name="incallui_answer_in_head_up">Block fullscreen on call answer</string>
     <!--Message-->
     <string name="mms">Messaging</string>
     <string name="mms_disable_ad">Disable ads</string>
@@ -602,14 +622,6 @@
     <string name="mms_disable_overseas_risk_tip_desc">Disable \"Might be overseas fraud\" tip</string>
     <string name="mms_im_old_device">Prohibition of identification as a new device</string>
     <string name="mms_verification_code_auto_copy">Auto-copy verification code to clipboard</string>
-    <!--Phone Service-->
-    <string name="phone">Phone Service</string>
-    <string name="phone_smart_dual_sim">Unlock Smart dual SIM</string>
-    <string name="phone_disable_remove_network_mode">Enable network type menu</string>
-    <string name="phone_vice_slot_volte">Unlock Vice slot VoLTE</string>
-    <string name="phone_vice_slot_volte_desc">Change mobile data to secondary SIM during VoLTE calls on the secondary SIM</string>
-    <string name="phone_unlock_voice_link">Unlock Voice link</string>
-    <string name="phone_unlock_voice_link_desc">Unlock Voice link for some SIMs which support Wi-Fi calling</string>
     <!--Download management program-->
     <string name="downloads">Downloads</string>
     <string name="various_fuck_xlDownload">Block generate of .xlDownload folder</string>
@@ -694,6 +706,35 @@
     <string name="system_ui_status_bar_battery_style_font_size">Battery percentage font size</string>
     <string name="system_ui_status_bar_battery_style_font_mark_size">Battery percentage symbol font size</string>
     <string name="system_ui_status_bar_battery_style_vertical_offset">Up and down offset of battery percentage symbol</string>
+    <string name="system_ui_statusbar_battery_detail">Battery info</string>
+    <string name="system_ui_statusbar_battery_detail_title">Display battery info</string>
+    <string name="system_ui_statusbar_battery_detail_enable">Display battery info</string>
+    <string name="system_ui_statusbar_battery_detail_content_title">Display content</string>
+    <string name="system_ui_statusbar_battery_detail_hide_unit_title">Hide unit</string>
+    <string name="system_ui_statusbar_battery_detail_at_right_title">Display on the right</string>
+    <string name="system_ui_statusbar_battery_detail_temp_decimal_title">Temperature is always displayed as a decimal</string>
+    <string name="system_ui_statusbar_battery_detail_positive_title">Current value is always positive</string>
+    <string name="system_ui_statusbar_battery_detail_fix_current_ratio_title">Fix current value ratio on some devices</string>
+    <string name="system_ui_statusbar_battery_detail_single_row_title">Display in single row</string>
+    <string name="system_ui_statusbar_battery_detail_reverse_order_title">Reverse order</string>
+    <string name="system_ui_statusbar_battery_detail_in_charge_title">Show when charging only</string>
+    <string name="system_ui_statusbar_battery_detail_update_spacing_title">Update interval</string>
+    <string name="system_ui_statusbar_battery_detail_font_size_title">Font size</string>
+    <string name="system_ui_statusbar_battery_detail_bold_title">Bold</string>
+    <string name="system_ui_statusbar_battery_detail_align_title">Alignment</string>
+    <string name="system_ui_statusbar_battery_detail_fixed_width_title">Fixed content width</string>
+    <string name="system_ui_statusbar_battery_detail_left_margin_title">Left margin</string>
+    <string name="system_ui_statusbar_battery_detail_right_margin_title">Right margin</string>
+    <string name="system_ui_statusbar_battery_detail_vertical_offset_title">Vertical offset</string>
+    <string name="array_temp_current">Temperature &amp; current</string>
+    <string name="array_power">Power only</string>
+    <string name="array_current">Current only</string>
+    <string name="array_temp_power">Temperature &amp; power</string>
+    <string name="array_power_current">Current &amp; power</string>
+    <string name="array_hide_unit_none">Do not hide</string>
+    <string name="array_hide_unit_all">Hide all</string>
+    <string name="array_hide_unit_temp">Hide temperature unit</string>
+    <string name="array_hide_unit_power_current">Hide current and power unit</string>
     <string name="system_ui_statusbar_iconmanage_wifi_title">Wi-Fi</string>
     <string name="system_ui_statusbar_iconmanage_bluetooth_title">Bluetooth</string>
     <string name="system_ui_statusbar_iconmanage_mobile_title">Mobile network</string>
@@ -827,10 +868,8 @@
     <string name="system_ui_control_center_snow_leopard_mode">S-Leo mode</string>
     <string name="system_ui_control_center_snow_leopard_mode_desc">Experimental feature. Disables all audio output.</string>
     <string name="system_ui_control_auto_close">Close after tapping</string>
-    <string name="system_ui_control_center_qs_bg_color">Background color</string>
     <string name="system_ui_control_center_qs_color">Icon color</string>
     <string name="system_ui_control_center_qs_open_color">Enable customization of the small tile</string>
-    <string name="system_ui_control_center_qs_big_open_color">Enable customization of the large tile</string>
     <string name="system_ui_control_auto_close_more">By tapping the status bar block, the status bar will automatically retract.</string>
     <string name="system_control_center_qs_rows">Rows</string>
     <string name="system_control_center_qs_rows_format">%d lines</string>
@@ -883,17 +922,13 @@
     <string name="system_ui_control_center_show_weather">Show weather</string>
     <string name="system_ui_control_center_show_weather_city">Show city</string>
     <string name="system_ui_control_center_disable_device_managed">Hide network monitoring prompts</string>
-    <string name="system_ui_control_center_hide_edit_botton">Hide Edit button</string>
-    <string name="system_ui_control_center_tile_super_blur">Advanced textures on QS tiles</string>
     <string name="system_ui_control_center_mute_visible_notice">Mute when screen is on</string>
     <string name="system_ui_control_center_unimportant_notification">Block unimportant notifications automatically</string>
     <string name="system_ui_control_center_expand_notification">Expand notifications</string>
     <string name="system_ui_control_center_auto_clean_expand_notification">Auto hide expanded notifications</string>
     <string name="system_ui_control_center_expand_notification_show_time">Display duration</string>
     <string name="system_ui_control_center_mute_visible_notice_desc">When the screen is on, the pop-up notification won\'t play the alert sound.</string>
-    <string name="system_ui_control_center_rounded_rect">Rounded rectangle tile</string>
     <string name="system_ui_control_center_statusbar_blur">Force background blur</string>
-    <string name="system_ui_control_center_rounded_rect_radius">Rounded radius</string>
     <string name="system_ui_control_center_fix_tiles_list">Unlock hidden control center tiles</string>
     <string name="system_ui_shade_header_gradient_blur">Blur the top of control center and Notification shade</string>
     <string name="system_ui_control_center_hide_operator">Customize carrier name</string>
@@ -906,25 +941,17 @@
     <string name="system_ui_controlcenter_enable_title">Customize the number of rows and columns</string>
     <string name="system_control_center_old_qs_grid_columns">Number of columns in collapsed panel</string>
     <string name="system_control_center_old_qs_grid_columns_horizontal">Number of columns in collapsed panel (Horizontal)</string>
-    <string name="system_ui_control_center_card_tiles_customization">Customize card tiles</string>
-    <string name="system_ui_control_center_card_tiles_customization_desc">Long press and drag the cards you\'ve added to adjust the order</string>
-    <string name="system_ui_control_center_card_tiles_customization_add">Added</string>
-    <string name="system_ui_control_center_card_tiles_customization_not_add">Not added</string>
     <string name="system_ui_control_center_unlock_all_focus">Remove focus notification whitelist</string>
+    <string name="system_ui_focus_notification_list">Focus notification list</string>
     <string name="system_ui_control_center_remove_notif_num_limit">Remove notification count limit</string>
     <string name="system_ui_control_center_remove_notif_num_limit_desc">Allow display 10, 17 or more notifications.</string>
     <string name="system_ui_control_center_opt_notification_element_background_color">Optimize focus notification background color mixing</string>
     <string name="system_ui_control_center_opt_notification_element_background_color_desc">Restore the default notifications color mixing style, and check the flashlight focus notification simultaneously.</string>
     <string name="system_ui_control_center_opt_notification_element_background_color_advanced">Enhance focus on the notification background</string>
     <string name="system_ui_control_center_opt_notification_element_background_color_advanced_desc">May be incompatible with full-screen AOD</string>
-    <string name="system_ui_control_center_qs_brightness_top_value_show_title">Display brightness value</string>
-    <string name="system_ui_control_center_qs_volume_top_value_show_title">Display volume value</string>
     <string name="system_ui_control_center_zen_fix">DND mode fix</string>
     <string name="system_ui_control_center_zen_fix_desc">Fix some devices still ring when in DND mode</string>
     <string name="system_ui_other_title">Others</string>
-    <string name="system_ui_disable_volume">AOSP volume bar</string>
-    <string name="system_ui_disable_power">AOSP power menu</string>
-    <string name="system_ui_disable_volume_desc">Modifications to the volume bar of HyperOS cannot be applied to the AOSP volume bar</string>
     <string name="system_ui_unlock_clipboard">Unlock AOSP clipboard editor</string>
     <string name="system_ui_unlock_clipboard_desc">After unlocking, it will pop-up together with the HyperOS editor.</string>
     <string name="system_ui_another_title">Others</string>
@@ -934,13 +961,6 @@
     <string name="system_ui_disable_infinitymode_gesture">Disable infinite zoom gestures</string>
     <string name="system_ui_disable_infinitymode_gesture_sum">Only for tablets</string>
     <string name="system_ui_disable_bottombar">Hide bottom gesture of the small window</string>
-    <string name="system_ui_others_pct_title">Data display</string>
-    <string name="system_cc_showpct_style">Data percentage display style</string>
-    <string name="system_showpct_title">Display brightness percentage</string>
-    <string name="system_cc_volume_showpct_title">Display volume percentage</string>
-    <string name="system_ui_others_showpct_top">Top percentage</string>
-    <string name="system_ui_others_showpct_top_desc">Percentage distance from the top of the screen</string>
-    <string name="system_showpct_use_blur">Use Advanced textures effect</string>
     <string name="system_ui_notification_freeform">Pull down Notification shade to open with floating window</string>
     <string name="system_ui_notification_freeform_desc">Notifications from Mi Push may not be supported</string>
     <string name="system_ui_monet_title">Monet</string>
@@ -948,19 +968,11 @@
     <string name="system_ui_monet_overlay_custom_desc">Customize theme colors instead of fetching colors from system wallpaper</string>
     <string name="system_ui_monet_overlay_custom_color">Choose theme color</string>
     <string name="system_ui_qs_label">Quick switch tab</string>
+    <string name="ic_qs_title_flashlight">Flashlight</string>
     <string name="system_ui_notification_title">Notification</string>
     <string name="system_ui_other_notification_fix">Disable notification whitelist</string>
-    <string name="system_ui_other_default_plugin_theme">Remove blur restrictions from Advanced textures</string>
-    <string name="system_ui_other_default_plugin_theme_desc">Unlock the blur of Advanced textures, which is disabled by default for third-party themes in the System UI Plug-in.</string>
-    <string name="system_ui_plugin_volume_title">Volume bar</string>
-    <string name="system_ui_volume_collpased_column_press">Long press to expand the secondary volume bar</string>
-    <string name="system_ui_volume_collpased_column_press_desc">The expand button will turn off when this feature are enabled.</string>
-    <string name="system_ui_volume_hide_foot_button">Hide Silent mode and DND button</string>
-    <string name="system_ui_plugin_enable_volume_blur">Enable volume bar blur</string>
     <string name="system_ui_move_log_to_miui">Move statusbar_gestures.dat to MIUI directory</string>
-    <string name="system_ui_plugin_enable_volume_blur_desc">May lead to high GPU load</string>
     <!--Telecom-->
-    <string name="telecom">Manage calls</string>
     <string name="scam_reminder_bypass_caption">Allow call forwarding via MMI code</string>
     <string name="scam_reminder_bypass_description">Allows direct dialing of MMI codes, such as **21*8#, to activate call forwarding.</string>
     <!--Settings-->
@@ -1019,9 +1031,6 @@
     <string name="theme_manager_diable_ads_desc">Replace \"guess what you like\" ads with blank cards, and remove the rest of the ads completely.</string>
     <string name="theme_manager_allow_download_more">Allow more downloads without logging in</string>
     <string name="theme_manager_allow_download_more_desc">Allow downloading more than 10 items without logging in</string>
-    <!--remotecontroller-->
-    <string name="remotecontroller">Mi Remote</string>
-    <string name="remotecontroller_disable_ad">Disable ads</string>
     <!--Updater-->
     <string name="updater">Updater</string>
     <string name="updater_enable_miui_version">Enable Fake version for Updater</string>
@@ -1059,10 +1068,6 @@
     <string name="milink_disable_pc_clipboard_region_check_desc">Fixes PC to phone or tablet clipboard sync blocked by region mismatch</string>
     <string name="milink_allow_camera_devices">Force support for camera streaming</string>
     <string name="milink_fuck_hpplay">Block generate of hpplay folders</string>
-    <string name="milink_notification_discovery_compatibility">Notification device discovery compatibility</string>
-    <string name="milink_notification_discovery_compatibility_desc">Bypass Cast bit check during local device discovery to improve compatibility</string>
-    <string name="milink_notification_click_flow">Notification click flow</string>
-    <string name="milink_notification_click_flow_desc">Convert notification click into native PIN_APP transaction for cross-device flow</string>
     <!--Sound Recorder-->
     <string name="sound_recorder">Sound Recorder</string>
     <string name="sound_recorder_disable_ai_watermark">Disable AI watermark</string>
@@ -1070,11 +1075,6 @@
     <!--Notes-->
     <string name="notes">Notes</string>
     <string name="notes_disable_ai_watermark">Disable AI watermark</string>
-    <!--Always-on display-->
-    <string name="aod_hyperos">Always-on display and Lock screen editor</string>
-    <string name="aod_unlock_always_on_display">Unlock the display time limit of the Always-on display</string>
-    <string name="aod_unlock_always_on_display_more">Restart the System UI to fully enable the feature</string>
-    <string name="aod_unlock_aon">Unlock Aod Aon</string>
     <!--Taplus-->
     <string name="content_extension">Taplus</string>
     <string name="content_extension_browser">Use third-party browser</string>
@@ -1101,25 +1101,6 @@
     <string name="lpa">LPA</string>
     <string name="lpa_custom_imei">Custom IMEI</string>
     <string name="lpa_custom_imei_desc">Make sure you\'ve entered the IMEI correctly. An incorrect IMEI may cause the eSIM to be unavailable or abnormal. We\'re not responsible for any consequences arising therefrom.</string>
-    <!--Gallery-->
-    <string name="gallery">Gallery</string>
-    <string name="gallery_enable_hdr_enhanced">Unlock display HDR enhanced image</string>
-    <string name="gallery_enable_pdf">Unlock Create PDF</string>
-    <string name="gallery_enable_ocr">Unlock OCR</string>
-    <string name="gallery_enable_ocr_form">Unlock scan form</string>
-    <string name="gallery_enable_id_photo">Unlock ID</string>
-    <string name="gallery_enable_photo_movie">Unlock Clip</string>
-    <string name="gallery_enable_video_post">Unlock Video effects</string>
-    <string name="gallery_enable_video_editor">Unlock Video editor</string>
-    <string name="gallery_enable_un_privacy_watermark">Remove the privacy watermark word limit</string>
-    <string name="gallery_enable_un_privacy_watermark_more">Enabling it will slightly increase the watermark density to accommodate longer word counts</string>
-    <string name="gallery_enable_magic_matting">Unlock Cutout</string>
-    <string name="gallery_backup_server">Backup server</string>
-    <string name="gallery_backup_server_xiaomi">Xiaomi Cloud</string>
-    <string name="gallery_backup_server_google">Google</string>
-    <string name="gallery_backup_server_onedrive">Google &amp; OneDrive</string>
-    <string name="gallery_longer_trashbin_time">Extend the automatic deletion time for trash bin to 365 days</string>
-    <string name="gallery_longer_trashbin_time_desc">Experimental feature. Only for China Mainland users.</string>
     <!--System security components-->
     <string name="guard_provider_hyperos">System security components</string>
     <string name="guard_provider_disable_upload_applist">Prevent automatic upload of installed app list</string>
@@ -1177,10 +1158,11 @@
     <string name="home_gesture_multi_choose_app_none">None</string>
     <string name="home_layout">Layout</string>
     <string name="home_layout_home_title">Home screen</string>
-    <string name="home_layout_indicator_title">Indicator</string>
-    <string name="home_layout_indicator_margin_bottom_desc">Indicator distance from screen bottom margin</string>
+    <string name="home_layout_indicator_title">Desktop search</string>
+    <string name="home_layout_indicator_margin_bottom_desc">Adjust the distance between desktop search and the bottom of the screen.</string>
     <string name="home_layout_hotseats_title">Dock</string>
     <string name="home_layout_searchbar_title">Search bar</string>
+    <string name="home_layout_searchbar_os4_hint">On OS4, adjust the search capsule under Layout → Desktop search.</string>
     <string name="home_layout_searchbar_width">Height</string>
     <string name="home_layout_seek_points">Page indicator</string>
     <string name="home_layout_unlock_grids">Unlock layout</string>
@@ -1290,6 +1272,7 @@
     <string name="home_title_notif_color">Notification dot background color customize</string>
     <string name="home_title_notif_color_picker">Custom color</string>
     <string name="home_title_icon_size">Icon size</string>
+    <string name="home_title_icon_size_moved">From HyperOS 4 on the icon size is adjusted under Layout → Icon scale. Please change it there.</string>
     <string name="home_recent">Recents</string>
     <string name="home_recent_animation_speed">Animation speed</string>
     <string name="home_recent_unlock_pin">Unlock pinned apps</string>
@@ -1330,6 +1313,24 @@
     <string name="home_widget_resizable">Remove any widget size limitations</string>
     <string name="home_widget_widget_blur_opt">Optimize widget blur</string>
     <string name="home_dock">Dock</string>
+    <string name="home_animation">Animation &amp; effects</string>
+    <string name="home_animation_open_category">App open &amp; close animations</string>
+    <string name="home_animation_open_rate_enable">Custom duration</string>
+    <string name="home_animation_open_rate_enable_desc">Override the duration of app open/close transitions</string>
+    <string name="home_animation_recents_category">Recents &amp; gesture animations</string>
+    <string name="home_animation_recents_enable">Custom duration</string>
+    <string name="home_animation_recents_enable_desc">Override the duration of recents, swipe-up and other desktop animations</string>
+    <string name="home_animation_open_rate_desc">30%–200%; below 100% speeds animations up, above 100% slows them down</string>
+    <string name="home_animation_open_rate">Duration ratio</string>
+    <string name="home_dock_unlock_style">Dock unlock fly-in animation</string>
+    <string name="home_dock_unlock_style_daybreak">Rise and settle</string>
+    <string name="home_dock_unlock_style_depth_flip">Arrive from depth</string>
+    <string name="home_dock_unlock_style_gale">Park out to the right</string>
+    <string name="home_dock_unlock_style_orbit_sweep">Enter diagonally</string>
+    <string name="home_dock_unlock_style_ripple">Calm and composed</string>
+    <string name="home_dock_unlock_style_perspective_fold">Perspective fold</string>
+    <string name="home_dock_unlock_style_capsule_fission">Elastic deformation</string>
+    <string name="home_dock_unlock_style_auto_aim">Gravitational potential</string>
     <string name="home_dock_bg_enable">Add background blur to dock</string>
     <string name="home_dock_bg_all_app">Drawer mode compatible</string>
     <string name="home_dock_bg_all_app_more">Turning on prevents the dock from being truncated, but the dock height is limited.</string>
@@ -1381,6 +1382,8 @@
     <string name="home_other_mi_pad_enable_more_setting_desc">The unlocked features may not be available, and some features require support from the underlying system.</string>
     <string name="home_other_disable_prestart">Disable app preload</string>
     <string name="home_other_opt_app_launch_delay">Optimize app launch delay</string>
+    <string name="home_is_rust_tips">If changes made to the parameters on the current screen do not take effect after restarting the app, please restart your device.</string>
+    <string name="home_is_rust_no_support">The current version of LSPosed does not support HyperOS Runtime hooks. Please try updating LSPosed and then try again.</string>
     <!--Gallery Editor-->
     <string name="mediaeditor">Gallery Editor</string>
     <string name="mediaeditor_foundation">Basic</string>
@@ -1542,6 +1545,8 @@
     <string name="security_center_unlock_memc">Unlock MEMC</string>
     <string name="security_center_unlock_enhance_contours">Unlock Enhanced contours</string>
     <string name="security_center_unlock_s_resolution">Unlock Super resolution</string>
+    <string name="security_center_remove_vb_temp_limit">Remove image enhancement temperature limit</string>
+    <string name="security_center_remove_vb_temp_limit_summary">When the temperature is too high, features such as “Ultra HD Playback” and “Video Quality Enhancement” will no longer be automatically disabled. Continuing to use these features when the temperature is too high may cause the device to overheat severely. This software assumes no liability, meow.</string>
     <string name="security_center_hide_sidebar">Hide sidebar</string>
     <string name="security_center_leave_open">Leave the slide unfolded</string>
     <string name="security_center_sidebar_show_suggest">Disable show suggest apps</string>
@@ -1568,17 +1573,6 @@
     <string name="trustservice">MiTrustService</string>
     <string name="trustservice_disable_mrm">Disable risk detections</string>
     <string name="trustservice_disable_mrm_desc">Experimental feature. You may not use this feature in violation of local or national laws.</string>
-    <!--Weather-->
-    <string name="weather">Weather</string>
-    <string name="weather_device_level_title">Animation level</string>
-    <string name="weather_device_level_title_low">Low</string>
-    <string name="weather_device_level_title_middle">Middle</string>
-    <string name="weather_device_level_title_high">High</string>
-    <string name="weather_card_display_type_title">Card display type</string>
-    <string name="weather_card_display_type_title_2">Light mode</string>
-    <string name="weather_card_display_type_title_3">Dark mode</string>
-    <string name="weather_unlock_blur_title">Unlock global advanced materials</string>
-    <string name="weather_unlock_blur_desc">Only supported on some versions, and the device must be on HyperOS 3 or later</string>
     <!--Analytics-->
     <string name="analytics">Analytics</string>
     <string name="analytics_fuck_guard">Remove guard</string>
@@ -1592,6 +1586,7 @@
     <string name="barrage_global_enable">Allow global use of barrage notifications</string>
     <string name="barrage_not_touchable">Barrage notification not touchable</string>
     <string name="barrage_custom_barrage_length">Custom barrage notification length</string>
+    <string name="barrage_custom_barrage_length_desc">Maximum displayed text length before the ellipsis. Default keeps the system limit. Some emoji use multiple length units. Restart Barrage after changing.</string>
     <!--Joyose-->
     <string name="joyose">Joyose</string>
     <string name="joyose_cloud_control_title">Cloud control</string>
@@ -1778,65 +1773,36 @@
     <string name="operator_fix_none">Not repair</string>
     <string name="operator_fix_1">Method 1</string>
     <string name="operator_fix_2">Method 2 (recommended)</string>
-    <string name="ic_qs_title_wifi">Wi-Fi</string>
-    <string name="ic_qs_title_cellular">Cellular</string>
-    <string name="ic_qs_title_bluetooth">Bluetooth</string>
-    <string name="ic_qs_title_gps">GPS</string>
-    <string name="ic_qs_title_nfc">NFC</string>
-    <string name="ic_qs_title_hotspot">Hotspot</string>
-    <string name="ic_qs_title_flashlight">Flashlight</string>
-    <string name="ic_qs_title_settings">Settings</string>
-    <string name="ic_qs_title_airplane">Airplane mode</string>
-    <string name="ic_qs_title_autobrightness">Auto brightness</string>
-    <string name="ic_qs_title_vowifi1">VoWiFi SIM 1</string>
-    <string name="ic_qs_title_vowifi2">VoWiFi SIM 2</string>
     <string name="custom_hook_new">Add hook</string>
     <string name="custom_hook_mode">Select mode</string>
     <string name="open_source">Open source projects</string>
     <string name="close_source">Close source projects</string>
-
-    <!-- Browser -->
-    <string name="browser_settings">Browser Settings</string>
-    <string name="browser_ad_block">Ad blocker</string>
-    <string name="browser_ad_block_summary">Remove ads and recommendations on browser homepage</string>
-    <string name="browser_skip_splash">Skip splash screen</string>
-    <string name="browser_skip_splash_summary">Disable ads on startup screen</string>
-    <string name="browser_show_sug_switch">Restore search suggestion settings</string>
-    <string name="browser_show_sug_switch_summary">Show hidden search suggestion switch</string>
-    <string name="browser_hide_homepage_top_bar">Hide homepage top bar</string>
-    <string name="browser_hide_homepage_top_bar_summary">Hide top bar on simplified homepage</string>
-    <string name="browser_block_dialog">Block marketing dialogs</string>
-    <string name="browser_block_dialog_summary">Block various promotion pop-ups</string>
-    <string name="browser_block_ads">Block ads</string>
-    <string name="browser_block_ads_summary">Block download dialog game promos, search suggestion app ads and other feed promotions</string>
-    <string name="browser_search_engine">Search engine config injection</string>
-    <string name="browser_search_engine_summary">Inject the built-in searchEngines config into the browser, custom fields below act as optional overrides</string>
-    <string name="browser_search_engine_name">Override engine key</string>
-    <string name="browser_search_engine_label">Override display name</string>
-    <string name="browser_search_engine_url">Override search URL</string>
-    <string name="browser_search_engine_url_summary">Use {searchTerms} as the query placeholder, same as default means no override</string>
-    <string name="browser_search_engine_icon">Override icon URL</string>
-
-    <!-- QuickSearchBox -->
-    <string name="quicksearchbox">Search</string>
-    <string name="quicksearchbox_settings">Search Settings</string>
-    <string name="quicksearchbox_search_engine">Sync search engine config</string>
-    <string name="quicksearchbox_search_engine_summary">Inject the built-in searchEngines config into QuickSearchBox, shared with the browser</string>
+    <string name="home_layout_experimental_title">Experimental</string>
+    <string name="home_layout_pad_grid_title">Tablet grid</string>
+    <string name="home_layout_pad_grid_desc">Rewrite the tablet layout grid; no effect on phones</string>
+    <string name="home_layout_pad_major_title">Tablet long side</string>
+    <string name="home_layout_pad_minor_title">Tablet short side</string>
+    <string name="home_layout_fold_grid_title">Foldable grid</string>
+    <string name="home_layout_fold_grid_desc">Rewrite the foldable layout grid; no effect on phones</string>
+    <string name="home_layout_fold_major_title">Foldable long side</string>
+    <string name="home_layout_fold_minor_title">Foldable short side</string>
+    <string name="home_layout_icon_scale_title">Icon scale</string>
+    <string name="home_layout_icon_scale_desc">Icon size levels: 70 is the system default size, drag right to enlarge and left to shrink</string>
+    <string name="home_layout_recents_hide_clear_title">Hide the recents clear button</string>
+    <string name="home_layout_recents_hide_clear_desc">Hides the button but keeps its function</string>
+    <string name="home_layout_recents_no_clear_title">Disable the recents clear button</string>
+    <string name="home_layout_recents_no_clear_desc">Removes the button and what it does</string>
+    <string name="home_layout_folder_cols_title">Folder columns</string>
+    <string name="home_layout_folder_cols_desc">Uses the folder column count from the folder settings page</string>
 
     <!-- Bilibili -->
     <string name="bilibili">Bilibili</string>
     <string name="bilibili_blue">Bilibili Blue</string>
     <string name="bilibili_in">Bilibili International</string>
     <string name="bilibili_hd">Bilibili HD</string>
-    <string name="bilibili_settings">Bilibili Settings</string>
-    <string name="bilibili_live_invisible">Live invisible viewing</string>
-    <string name="bilibili_live_invisible_summary">Watch Bilibili live streams invisibly, hide entry notifications and heartbeat</string>
+    <string name="bilibili_settings">Bilibili settings</string>
+    <string name="bilibili_live_invisible">Invisible live viewing</string>
+    <string name="bilibili_live_invisible_summary">Watch Bilibili live rooms invisibly, hiding enter notifications and heartbeats</string>
     <string name="bilibili_remove_block">Remove restrictions</string>
-    <string name="bilibili_remove_block_summary">Bypass user block status checks and roaming restrictions</string>
-
-    <!-- Hongguo -->
-    <string name="hongguo">Hongguo</string>
-    <string name="hongguo_settings">Hongguo Settings</string>
-    <string name="hongguo_enable">Enable Hongguo enhancements</string>
-    <string name="hongguo_enable_summary">Install hooks for the Hongguo short-drama app. After enabling, configure detailed switches via the built-in panel inside the app (Hongguo native settings page entry or notification quick menu)</string>
+    <string name="bilibili_remove_block_summary">Bypass user ban status checks and roaming feature restrictions</string>
 </resources>

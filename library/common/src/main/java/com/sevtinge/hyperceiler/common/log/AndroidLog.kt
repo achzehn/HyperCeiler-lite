@@ -29,6 +29,14 @@ object AndroidLog {
         }
     }
 
+    /**
+     * 文件日志侧的异常格式化：logcat 由 Log.e(_, _, t) 输出完整堆栈，
+     * 文件日志这里必须补上堆栈，否则导出的运行日志无法用于排错。
+     */
+    private fun formatThrowable(t: Throwable?): String {
+        return if (t != null) "\n" + Log.getStackTraceString(t) else ""
+    }
+
     private fun shouldLog(requiredLevel: Int): Boolean {
         return LoggerUtils.shouldLog(LogStatusManager.getLogLevel(), requiredLevel)
     }
@@ -52,7 +60,7 @@ object AndroidLog {
     fun d(tag: String, msg: String, t: Throwable?) {
         if (!shouldLog(LogLevelManager.LEVEL_VERBOSE)) return
         Log.d(tag, "[$tag]: $msg", t)
-        notifyListener("D", tag, msg + if (t != null) "\n$t" else "")
+        notifyListener("D", tag, msg + formatThrowable(t))
     }
 
     @JvmStatic
@@ -103,7 +111,7 @@ object AndroidLog {
     fun w(tag: String, msg: String, t: Throwable?) {
         if (!shouldLog(LogLevelManager.LEVEL_VERBOSE)) return
         Log.w(tag, "[$tag]: $msg", t)
-        notifyListener("W", tag, msg + if (t != null) "\n$t" else "")
+        notifyListener("W", tag, msg + formatThrowable(t))
     }
 
     @JvmStatic
@@ -117,7 +125,7 @@ object AndroidLog {
     fun w(tag: String, pkg: String?, msg: String, t: Throwable?) {
         if (!shouldLog(LogLevelManager.LEVEL_VERBOSE)) return
         Log.w(tag, LoggerUtils.formatBrackets(pkg, tag, msg), t)
-        notifyListener("W", tag, msg + if (t != null) "\n$t" else "")
+        notifyListener("W", tag, msg + formatThrowable(t))
     }
 
     // ============ Error only: 1 ============
@@ -139,14 +147,14 @@ object AndroidLog {
     fun e(tag: String, t: Throwable) {
         if (!shouldLog(LogLevelManager.LEVEL_ERROR_ONLY)) return
         Log.e(tag, "[$tag]: ${t.message ?: t.toString()}", t)
-        notifyListener("E", tag, t.message ?: t.toString())
+        notifyListener("E", tag, (t.message ?: t.toString()) + formatThrowable(t))
     }
 
     @JvmStatic
     fun e(tag: String, msg: String, t: Throwable?) {
         if (!shouldLog(LogLevelManager.LEVEL_ERROR_ONLY)) return
         Log.e(tag, "[$tag]: $msg", t)
-        notifyListener("E", tag, msg + if (t != null) "\n$t" else "")
+        notifyListener("E", tag, msg + formatThrowable(t))
     }
 
     @JvmStatic
@@ -160,6 +168,6 @@ object AndroidLog {
     fun e(tag: String, pkg: String?, msg: String, t: Throwable?) {
         if (!shouldLog(LogLevelManager.LEVEL_ERROR_ONLY)) return
         Log.e(tag, LoggerUtils.formatBrackets(pkg, tag, msg), t)
-        notifyListener("E", tag, msg + if (t != null) "\n$t" else "")
+        notifyListener("E", tag, msg + formatThrowable(t))
     }
 }

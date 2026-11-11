@@ -19,14 +19,11 @@
 
 package com.sevtinge.hyperceiler.settings.development;
 
-import static com.sevtinge.hyperceiler.libhook.utils.api.DeviceHelper.Miui.isPad;
-
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 
-import androidx.preference.EditTextPreference;
 import androidx.preference.SwitchPreference;
 
 import com.sevtinge.hyperceiler.R;
@@ -49,10 +46,7 @@ public class DevelopmentDebugModeFragment extends SettingsPreferenceFragment {
 
     SwitchPreference mDebugMode;
 
-    DropDownPreference mHomeVersion;
     DropDownPreference mSecurityVersion;
-    DropDownPreference mCameraVersion;
-    EditTextPreference mEditHomeVersion;
 
     @Override
     public int getPreferenceScreenResId() {
@@ -62,10 +56,7 @@ public class DevelopmentDebugModeFragment extends SettingsPreferenceFragment {
     @Override
     public void initPrefs() {
         mDebugMode = findPreference("prefs_key_development_debug_mode");
-        mHomeVersion = findPreference("prefs_key_debug_mode_home");
         mSecurityVersion = findPreference("prefs_key_debug_mode_security");
-        mCameraVersion = findPreference("prefs_key_debug_mode_camera");
-        mEditHomeVersion = findPreference("prefs_key_debug_mode_home_edit");
 
         mDebugMode.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean isDebug = (boolean) newValue;
@@ -82,32 +73,7 @@ public class DevelopmentDebugModeFragment extends SettingsPreferenceFragment {
             return true;
         });
 
-        int currentHomeValue = parseIntSafe(getSharedPreferences().getString("prefs_key_debug_mode_home", "0"));
-
-        if (isPad()) {
-            mHomeVersion.setEntries(com.sevtinge.hyperceiler.core.R.array.debug_mode_home_pad);
-            mHomeVersion.setEntryValues(com.sevtinge.hyperceiler.core.R.array.debug_mode_home_pad_value);
-        }
-
-        mEditHomeVersion.setVisible(currentHomeValue == 1);
-
-        mHomeVersion.setOnPreferenceChangeListener((preference, newValue) -> {
-            int newVal = parseIntSafe(newValue);
-            mEditHomeVersion.setVisible(newVal == 1);
-            if (newVal != 1) {
-                DebugModeUtils.INSTANCE.setChooseResult("com.miui.home", newVal);
-            }
-            return true;
-        });
-
         setSimpleDropDownListener(mSecurityVersion, "com.miui.securitycenter");
-        setSimpleDropDownListener(mCameraVersion, "com.android.camera");
-
-        mEditHomeVersion.setOnPreferenceChangeListener((preference, newValue) -> {
-            int newVal = parseIntSafe(newValue);
-            DebugModeUtils.INSTANCE.setChooseResult("com.miui.home", newVal);
-            return true;
-        });
 
         setPreference();
     }

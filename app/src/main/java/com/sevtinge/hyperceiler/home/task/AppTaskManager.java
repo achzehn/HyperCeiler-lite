@@ -17,7 +17,6 @@ import com.sevtinge.hyperceiler.utils.LSPosedScopeHelper;
 import com.sevtinge.hyperceiler.utils.LanguageHelper;
 import com.sevtinge.hyperceiler.utils.LogServiceUtils;
 import com.sevtinge.hyperceiler.utils.NoticeProcessor;
-import com.sevtinge.hyperceiler.utils.XposedActivateHelper;
 
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class AppTaskManager {
 
     private static final List<String> CHECK_LIST = List.of(
         "com.miui.securitycenter",
-        "com.android.camera",
         "com.miui.home"
     );
 
@@ -83,7 +81,6 @@ public class AppTaskManager {
             public void execute() {
                 // 调用装饰器：处理滤镜和节日特效
                 PageDecorator.decorate(activity);
-                XposedActivateHelper.init(activity);
                 LogServiceUtils.init(activity);
 
                 new Thread(() -> {

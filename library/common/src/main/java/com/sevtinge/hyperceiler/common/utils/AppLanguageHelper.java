@@ -30,27 +30,12 @@ public class AppLanguageHelper {
     private static final String TAG = "AppLanguageHelper";
 
     public static final String[] APP_LANGUAGES = {
-        "en", "zh_CN", "zh_TW", "zh_HK", "ja_JP", "pl_PL", "ru_RU", "ar_SA", "es_ES",
-        "pt_BR", "id_ID", "tr_TR", "vi_VN", "it_IT", "de_DE", "uk_UA", "zh_ME"
+        "zh_CN", "zh_TW", "zh_HK"
     };
     private static final int[] APP_LANGUAGE_LABELS = {
-        R.string.settings_app_en,
         R.string.settings_app_zh_cn,
         R.string.settings_app_zh_tw,
-        R.string.settings_app_zh_hk,
-        R.string.settings_app_ja_jp,
-        R.string.settings_app_pl_pl,
-        R.string.settings_app_ru_ru,
-        R.string.settings_app_ar_sa,
-        R.string.settings_app_es_es,
-        R.string.settings_app_pt_br,
-        R.string.settings_app_in_id,
-        R.string.settings_app_tr_tr,
-        R.string.settings_app_vi_vn,
-        R.string.settings_app_it_it,
-        R.string.settings_app_de_de,
-        R.string.settings_app_uk_ua,
-        R.string.settings_app_zh_me
+        R.string.settings_app_zh_hk
     };
 
     private static final Map<String, Locale> localeCache = new HashMap<>();
@@ -209,7 +194,7 @@ public class AppLanguageHelper {
 
     public static Locale localeFromAppLanguage(String lang) {
         if (TextUtils.isEmpty(lang)) {
-            return Locale.ENGLISH;
+            return localeFromIndex(0);
         }
         String[] parts = lang.split("_");
         if (parts.length == 1) {
@@ -217,7 +202,7 @@ public class AppLanguageHelper {
         } else if (parts.length >= 2) {
             return buildLocale(parts[0], parts[1]);
         } else {
-            return Locale.ENGLISH;
+            return localeFromIndex(0);
         }
     }
 
@@ -257,7 +242,7 @@ public class AppLanguageHelper {
 
     private static Locale buildLocale(String language, String country) {
         if (TextUtils.isEmpty(language)) {
-            return Locale.ENGLISH;
+            return Locale.SIMPLIFIED_CHINESE;
         }
         try {
             Locale.Builder builder = new Locale.Builder().setLanguage(language);

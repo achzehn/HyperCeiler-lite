@@ -19,35 +19,26 @@
 package com.sevtinge.hyperceiler.libhook.utils.hookapi
 
 import com.sevtinge.hyperceiler.libhook.utils.api.DeviceHelper.System.isMoreAndroidVersion
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.callMethod
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.callStaticMethodAs
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.getFirstFieldByExactType
-import io.github.kyuubiran.ezxhelper.core.ClassLoaderProvider
+import io.github.lingqiqi5211.ezhooktool.core.callMethod
+import io.github.lingqiqi5211.ezhooktool.core.callStaticMethod
+import io.github.lingqiqi5211.ezhooktool.xposed.dsl.getFirstFieldByExactType
+import io.github.lingqiqi5211.ezhooktool.xposed.dsl.getObjectField
 
 object StateFlowHelper {
      private val STATE_FLOW by lazy {
-        EzxHelpUtils.findClass("kotlinx.coroutines.flow.StateFlow",
-            ClassLoaderProvider.classLoader
-        )
+        com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("kotlinx.coroutines.flow.StateFlow")
     }
 
     private val STATE_FLOW_KT by lazy {
-        EzxHelpUtils.findClass("kotlinx.coroutines.flow.StateFlowKt",
-            ClassLoaderProvider.classLoader
-        )
+        com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("kotlinx.coroutines.flow.StateFlowKt")
     }
 
     private val READONLY_STATE_FLOW by lazy {
-        EzxHelpUtils.findClass("kotlinx.coroutines.flow.ReadonlyStateFlow",
-            ClassLoaderProvider.classLoader
-        )
+        com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("kotlinx.coroutines.flow.ReadonlyStateFlow")
     }
 
     private val MUTABLE_STATE_FLOW by lazy {
-        EzxHelpUtils.findClass("kotlinx.coroutines.flow.MutableStateFlow",
-            ClassLoaderProvider.classLoader
-        )
+        com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("kotlinx.coroutines.flow.MutableStateFlow")
     }
 
     private val READONLY_STATE_FLOW_CONSTRUCTOR by lazy {
@@ -60,7 +51,7 @@ object StateFlowHelper {
 
     @JvmStatic
     fun newStateFlow(initValue: Any?): Any {
-        return STATE_FLOW_KT.callStaticMethodAs("MutableStateFlow", initValue)
+        return STATE_FLOW_KT.callStaticMethod("MutableStateFlow", initValue) as Any
     }
 
     @JvmStatic
@@ -75,7 +66,10 @@ object StateFlowHelper {
         when (stateFlow::class.java.simpleName) {
             "ReadonlyStateFlow" -> {
                 if (isMoreAndroidVersion(36)) {
-                    stateFlow.getFirstFieldByExactType(MUTABLE_STATE_FLOW)
+                    // OS4: 字段名为 $$delegate_0，声明类型为 StateFlow 接口，
+                    // 按精确类型 MutableStateFlow 找不到，需先按字段名取
+                    runCatching { stateFlow.getObjectField("$\$delegate_0") }.getOrNull()
+                        ?: stateFlow.getFirstFieldByExactType(MUTABLE_STATE_FLOW)
                 } else {
                     stateFlow.getFirstFieldByExactType(STATE_FLOW)
                 }

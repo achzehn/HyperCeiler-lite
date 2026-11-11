@@ -49,66 +49,23 @@ Xiaomi HyperOS 3 or 4 将是本项目的一个终点，就目前来说，小米�
 |:-------------------|:-----------------------------------|
 | 系统框架               | system                             |
 | 系统界面               | com.android.systemui               |
-| 系统桌面               | com.miui.home                      |
 | 系统更新               | com.android.updater                |
-| Joyose             | com.xiaomi.joyose                  |
-| 小米设置               | com.xiaomi.misettings              |
 | 安全服务 (手机管家、平板管家)   | com.miui.securitycenter            |
-| 壁纸                 | com.miui.miwallpaper               |
-| 传送门                | com.miui.contentextension          |
 | 弹幕通知               | com.xiaomi.barrage                 |
-| 电话                 | com.android.incallui               |
-| 电话服务               | com.android.phone                  |
-| 电量与性能              | com.miui.powerkeeper               |
-| 短信                 | com.android.mms                    |
-| 截屏                 | com.miui.screenshot                |
-| 日历                 | com.android.calendar               |
-| 笔记                 | com.miui.notes                     |
 | 浏览器                | com.android.browser                |
-| 鲁班（MTB）            | com.xiaomi.mtb                     |
-| 屏幕录制               | com.miui.screenrecorder            |
-| 权限管理服务             | com.lbe.security.miui              |
+| 搜索                 | com.android.quicksearchbox         |
 | 设置                 | com.android.settings               |
 | 搜狗输入法小米版           | com.sohu.inputmethod.sogou.xiaomi  |
-| 天气                 | com.miui.weather2                  |
 | 互联互通服务 (投屏)        | com.milink.service                 |
-| 外部存储设备             | com.android.externalstorage        |
-| 息屏与锁屏编辑 (万象息屏)     | com.miui.aod                       |
-| 文件管理               | com.android.fileexplorer           |
 | 系统服务组件             | com.miui.securityadd               |
-| 下载管理               | com.android.providers.downloads.ui |
-| 下载管理程序             | com.android.providers.downloads    |
-| 相册                 | com.miui.gallery                   |
-| 小米创作               | com.miui.creation                  |
 | 小米互传               | com.miui.mishare.connectivity      |
-| 小米相册-编辑            | com.miui.mediaeditor               |
 | 小米云服务              | com.miui.cloudservice              |
-| 小米智能卡              | com.miui.tsmclient                 |
-| 小米钱包                | com.mipay.wallet                   |
-| 讯飞输入法小米版           | com.iflytek.inputmethod.miui       |
 | 应用包管理组件            | com.miui.packageinstaller          |
 | 应用商店               | com.xiaomi.market                  |
-| 智能助理               | com.miui.personalassistant         |
-| 主题商店 (主题壁纸、壁纸与个性化) | com.android.thememanager           |
 | 系统安全组件             | com.miui.guardprovider             |
-| 相机                 | com.android.camera                 |
-| 小爱翻译               | com.xiaomi.aiasst.vision           |
-| 小米澎湃 AI 引擎         | com.xiaomi.aicr                    |
-| 小爱视觉               | com.xiaomi.scanner                 |
-| NFC 服务             | com.android.nfc                    |
-| 音质音效               | com.miui.misound                   |
 | 备份                 | com.miui.backup                    |
 | 小米换机               | com.miui.huanji                    |
 | MiTrustService     | com.xiaomi.trustservice            |
-| HTML 查看器           | com.android.htmlviewer             |
-| 通话管理               | com.android.server.telecom         |
-| 万能遥控               | com.duokan.phone.remotecontroller  |
-| Analytics          | com.miui.analytics                 |
-| 小米社区               | com.xiaomi.vipaccount              |
-| 语音唤醒               | com.miui.voicetrigger              |
-| 录音机                | com.android.soundrecorder          |
-| LPA                | com.miui.euicc                     |
-| 小米SIM卡激活服务         | com.xiaomi.simactivate.service     |
 | 跨屏协同服务             | com.xiaomi.mirror                  |
 
 </details>
@@ -154,6 +111,7 @@ Xiaomi HyperOS 3 or 4 将是本项目的一个终点，就目前来说，小米�
 - [「DisableFlagSecure」 by LSPosed](https://github.com/LSPosed/DisableFlagSecure)
 - [「DisableLogRequest」 by QueallyTech](https://github.com/QueallyTech/DisableLogRequest)
 - [「EzXHelper」 by KyuubiRan](https://github.com/KyuubiRan/EzXHelper)
+- [「EzHookTool」 by lingqiqi5211](https://github.com/lingqiqi5211/EzHookTool)
 - [「FixMiuiMediaControlPanel」 by qqlittleice](https://github.com/qqlittleice/FixMiuiMediaControlPanel)
 - [「FocusNotifLyric」 by wuyou-123](https://github.com/wuyou-123/FocusNotifLyric)
 - [「ForegroundPin」 by HChenX](https://github.com/HChenX/ForegroundPin)
@@ -161,7 +119,6 @@ Xiaomi HyperOS 3 or 4 将是本项目的一个终点，就目前来说，小米�
 - [「Gson」 by Android Open Source Project, Google Inc.](https://github.com/google/gson)
 - [「XiaomiHelper」 by HowieHChen](https://github.com/HowieHChen/XiaomiHelper)
 - [「HideMiuiClipboardDialog」 by zerorooot](https://github.com/zerorooot/HideMiuiClipboardDialog)
-- [「HookTool」 by HChenX](https://github.com/HChenX/HookTool)
 - [「HyperFocusApi」 by ghhccghk](https://github.com/ghhccghk/HyperFocusApi)
 - [「HyperSmartCharge」 by buffcow](https://github.com/buffcow/HyperSmartCharge)
 - [「HyperStar」 by YunZiA](https://github.com/YunZiA/HyperStar)

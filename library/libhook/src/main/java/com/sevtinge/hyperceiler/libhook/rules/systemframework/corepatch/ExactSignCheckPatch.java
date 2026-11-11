@@ -1,20 +1,19 @@
 package com.sevtinge.hyperceiler.libhook.rules.systemframework.corepatch;
 
+import static com.sevtinge.hyperceiler.libhook.base.BaseHook.findClassIfExists;
 import static com.sevtinge.hyperceiler.libhook.utils.api.DeviceHelper.System.isMoreAndroidVersion;
-import static com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils.findClassIfExists;
 
 import com.sevtinge.hyperceiler.common.log.XposedLog;
-import com.sevtinge.hyperceiler.libhook.callback.IMethodHook;
-import com.sevtinge.hyperceiler.libhook.utils.hookapi.tool.EzxHelpUtils;
+import com.sevtinge.hyperceiler.libhook.base.PackageTarget;
 
-import io.github.kyuubiran.ezxhelper.xposed.common.HookParam;
-import io.github.libxposed.api.XposedModuleInterface;
+import io.github.lingqiqi5211.ezhooktool.xposed.common.HookParam;
+import io.github.lingqiqi5211.ezhooktool.xposed.java.IMethodHook;
 
 public class ExactSignCheckPatch extends CorePatchHelper {
 
     private final String TAG = "ExactSignCheckPatch";
 
-    public void init(XposedModuleInterface.SystemServerStartingParam lpparam) {
+    public void init(PackageTarget lpparam) {
         // Android 11+
         try {
             Class<?> signingDetails = getSigningDetails(lpparam.getClassLoader());
@@ -35,6 +34,6 @@ public class ExactSignCheckPatch extends CorePatchHelper {
         if (isMoreAndroidVersion(33)) {
             return findClassIfExists("android.content.pm.SigningDetails", classLoader);
         }
-        return EzxHelpUtils.findClass("android.content.pm.PackageParser.SigningDetails", classLoader);
+        return com.sevtinge.hyperceiler.libhook.base.BaseHook.findClass("android.content.pm.PackageParser.SigningDetails", classLoader);
     }
 }

@@ -53,14 +53,13 @@ object LoggerHealthChecker {
     const val ALIVE_THRESHOLD = 75
 
     // ============ 各项权重 ============
-    private const val WEIGHT_LOGCAT = 30
-    private const val WEIGHT_LSPD_DUMP = 40
-    private const val WEIGHT_LSPD_PAGE_HEADER = 30
-    private const val MIN_DUMP_FILE_SIZE_BYTES = 1L * 1024L
+    // LSPosed 落盘日志是日志服务的主要信号，单独命中也足以判定存活；
+    // logcat 只用来加置信度，避免个别机型禁止普通应用读取 logcat 时误报。
+    private const val WEIGHT_LSPD_DUMP = 80
+    private const val WEIGHT_LOGCAT = 20
 
     private const val LOGCAT_READ_DELAY_MS = 150L
     private const val MAX_RETRIES = 3
-    private val PAGE_MARKER_REGEX = Regex("^----part \\d+ start----$")
 
     /**
      * 执行所有检查，更新 [confidence] 和 [diagSummary]。
@@ -81,13 +80,8 @@ object LoggerHealthChecker {
             val lspdDumpResult = checkLspdDumpFiles()
             score += lspdDumpResult.score
             diag.add("lspd_dump=${lspdDumpResult.tag}")
-
-            val lspdHeaderResult = checkLspdPageHeaders()
-            score += lspdHeaderResult.score
-            diag.add("lspd_page=${lspdHeaderResult.tag}")
         } else {
             diag.add("lspd_dump=NO_ROOT")
-            diag.add("lspd_page=NO_ROOT")
         }
 
         if (!hasRoot && "OK" == logcatResult.tag) {
@@ -119,7 +113,7 @@ object LoggerHealthChecker {
 
     /**
      * 详细状态（用于设备信息/调试日志）
-     * 示例："HEALTHY(100%) logcat=OK lspd_dump=OK lspd_page=OK"
+     * 示例："HEALTHY(100%) logcat=OK lspd_dump=OK"
      */
     @JvmStatic
     fun formatDetailedStatus(): String {
@@ -173,41 +167,15 @@ object LoggerHealthChecker {
         if (dumpFiles.isEmpty()) {
             return CheckResult(0, "NO_FILE")
         }
-        if (dumpFiles.all { it.length() < MIN_DUMP_FILE_SIZE_BYTES }) {
-            return CheckResult(WEIGHT_LSPD_DUMP / 4, "TOO_SMALL")
+        if (dumpFiles.all { it.length() == 0L }) {
+            return CheckResult(0, "EMPTY")
         }
         return CheckResult(WEIGHT_LSPD_DUMP, "OK")
-    }
-
-    private fun checkLspdPageHeaders(): CheckResult {
-        val dumpFiles = findCurrentLspdLogCandidates()
-        if (dumpFiles.isEmpty()) {
-            return CheckResult(0, "NO_FILE")
-        }
-        val invalidFile = dumpFiles.firstOrNull { !hasValidPageMarkerHeader(it) }
-        return if (invalidFile == null) {
-            CheckResult(WEIGHT_LSPD_PAGE_HEADER, "OK")
-        } else {
-            CheckResult(WEIGHT_LSPD_PAGE_HEADER / 2, "BAD_HEADER")
-        }
     }
 
     private fun findCurrentLspdLogCandidates(): List<File> {
         val logBase = localLogBaseDir ?: return emptyList()
         return findLogCandidates(File(logBase, "lspd/log"))
-    }
-
-    private fun hasValidPageMarkerHeader(file: File): Boolean {
-        return try {
-            file.bufferedReader().use { reader ->
-                val firstNonBlankLine = reader.lineSequence()
-                    .map { it.trim() }
-                    .firstOrNull { it.isNotEmpty() }
-                firstNonBlankLine != null && PAGE_MARKER_REGEX.matches(firstNonBlankLine)
-            }
-        } catch (_: Exception) {
-            false
-        }
     }
 
     private fun findLogCandidates(dir: File): List<File> {

@@ -8,6 +8,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -15,6 +16,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -37,10 +39,12 @@ import com.sevtinge.hyperceiler.R;
 import com.sevtinge.hyperceiler.about.controller.AboutAnimationController;
 import com.sevtinge.hyperceiler.common.log.AndroidLog;
 import com.sevtinge.hyperceiler.common.view.CubicEaseOutInterpolater;
+import com.sevtinge.hyperceiler.libhook.utils.api.DisplayUtils;
 import com.sevtinge.hyperceiler.utils.EggHelper;
 import com.sevtinge.hyperceiler.utils.NotificationHelper;
 import com.sevtinge.hyperceiler.utils.PermissionUtils;
 import com.sevtinge.hyperceiler.utils.PersistConfig;
+import com.sevtinge.hyperceiler.utils.SettingsFeatures;
 
 import java.security.SecureRandom;
 import java.util.Random;
@@ -51,7 +55,7 @@ import fan.device.DeviceUtils;
 import fan.internal.utils.ViewUtils;
 
 
-public class VersionCard extends FrameLayout {
+public class VersionCard extends FrameLayout implements View.OnClickListener {
     private View mActionBar;
     private View mCardClickView;
     private AnimatorSet mAnimatorSet;
@@ -64,7 +68,7 @@ public class VersionCard extends FrameLayout {
 
     private CubicEaseOutInterpolater mInterpolater;
     private boolean mNeedStartAnim = true;
-    private boolean mNeedUpdate = false;
+    private boolean mNeedUpdate = true;
     ViewGroup mRootView;
     private HyperCardView mUpdateText;
     private ViewGroup mVersionLayout;
@@ -74,6 +78,24 @@ public class VersionCard extends FrameLayout {
     private int mScrollValue = 0;
     private String mVersionName;
     private String mUpdateInfo = "";
+    private final Handler mHandler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (isAttachedToWindow()) {
+                checkUpdate();
+                if (mNeedUpdate) {
+                    mNeedStartAnim = true;
+                    mAboutAnimationController.iniData(getContext(), mNeedUpdate);
+                    performLogoAnimation(false);
+                    if (mScrollValue != 0) {
+                        mAboutAnimationController.startButtonAnimation(mScrollValue, mUpdateText);
+                    }
+                } else {
+                    mHandler.sendEmptyMessageDelayed(0, 1500L);
+                }
+            }
+        }
+    };
 
     public VersionCard(@NonNull Context context) {
         super(context);
@@ -97,21 +119,31 @@ public class VersionCard extends FrameLayout {
         refreshVersionName();
 
         mUpdateText = findViewById(R.id.update_hint_text);
-        mUpdateText.setVisibility(View.GONE);
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4.0f, getResources().getDisplayMetrics()));
+        mUpdateText.setContentPadding(padding, padding, padding, padding);
 
         mAnimatorSet = new AnimatorSet();
         mInterpolater = new CubicEaseOutInterpolater();
         mDecelerateInterpolator = new DecelerateInterpolator();
 
+        mUpdateText.setOnClickListener(this);
+        mUpdateText.setClickable(false);
+
+        checkUpdate();
+        applyUpdateButtonVisibility();
+
         mAboutAnimationController = new AboutAnimationController(getContext(), mNeedUpdate);
 
-        if (mScrollValue == 0) {
-            mIconView.setAlpha(1.0f);
-            mVersionLayout.setAlpha(1.0f);
-        } else {
-            if (mActionBar != null && mBgEffectView != null) {
-                mAboutAnimationController.startAnimation(mScrollValue, mIconView, mUpdateText, mVersionLayout, mActionBar, mBgEffectView);
+        if (!mNeedUpdate) {
+            if (mScrollValue == 0) {
+                mIconView.setAlpha(1.0f);
+                mVersionLayout.setAlpha(1.0f);
+            } else {
+                if (mActionBar != null && mBgEffectView != null) {
+                    mAboutAnimationController.startAnimation(mScrollValue, mIconView, mUpdateText, mVersionLayout, mActionBar, mBgEffectView);
+                }
             }
+            mHandler.sendEmptyMessageDelayed(0, 1500L);
         }
         setEgg();
         setLogoBlur();
@@ -281,6 +313,7 @@ public class VersionCard extends FrameLayout {
                         .setSmallIcon(R.drawable.ic_hyperceiler)
                         .setContentTitle(getResources().getString(R.string.logo_egg_NotificationName))
                         .setContentText(msg)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
                     builder.addExtras(EggHelper.INSTANCE.focusBuild(msg, getContext()));
 
@@ -302,7 +335,18 @@ public class VersionCard extends FrameLayout {
         return mAboutAnimationController;
     }
 
+    public void checkUpdate() {
+        mNeedUpdate = !TextUtils.isEmpty(getUpdateInfo());
+    }
 
+    private void applyUpdateButtonVisibility() {
+        if (mNeedUpdate) {
+            mUpdateText.setVisibility(View.VISIBLE);
+        } else {
+            mUpdateText.setVisibility(View.GONE);
+            mUpdateText.setClickable(false);
+        }
+    }
 
     public void refreshBetaView(String str) {
         TextView textView = findViewById(R.id.version_text);
@@ -321,7 +365,27 @@ public class VersionCard extends FrameLayout {
         }
     }
 
+    public void refreshUpdateStatus(View actionBar, View bgEffectView) {
+        boolean needUpdate = false;
+        String updateInfo = getUpdateInfo();
+        if ((TextUtils.isEmpty(updateInfo)) == mNeedUpdate) {
+            mNeedStartAnim = true;
+            mActionBar = actionBar;
+            mBgEffectView = bgEffectView;
+            if (!TextUtils.isEmpty(updateInfo)) {
+                needUpdate = true;
+            }
+            mNeedUpdate = needUpdate;
+            mRootView.removeAllViews();
+            initView();
+            invalidate();
+        }
+    }
 
+    @Override
+    public void onClick(View v) {
+        //Toast.makeText(getContext(), "click update", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -330,6 +394,42 @@ public class VersionCard extends FrameLayout {
     }
 
     public void performLogoAnimation(boolean z) {
+        if (mNeedStartAnim && mNeedUpdate) {
+            mUpdateText.setAccessibilityTraversalBefore(R.id.version_card_click_view);
+            mActionBar.setAccessibilityTraversalBefore(R.id.update_hint_text);
+            mNeedStartAnim = false;
+            AnimatorSet animatorSet = new AnimatorSet();
+            if (mScrollValue == 0) {
+                if (z) {
+                    animatorSet.playTogether(
+                        ObjectAnimator.ofFloat(mIconView, "alpha", 0.0f, 1.0f),
+                        ObjectAnimator.ofFloat(mVersionLayout, "alpha", 0.0f, 1.0f),
+                        ObjectAnimator.ofFloat(mUpdateText, "alpha", 0.0f, AboutAnimationController.getUpdateButtonMaxAlpha()));
+                } else {
+                    animatorSet.playTogether(
+                        ObjectAnimator.ofFloat(
+                            mUpdateText,
+                            "alpha",
+                            0.0f,
+                            AboutAnimationController.getUpdateButtonMaxAlpha()
+                        )
+                    );
+                }
+            }
+            animatorSet.setDuration(800L);
+            animatorSet.setInterpolator(mDecelerateInterpolator);
+            Animator[] animators = new Animator[3];
+            animators[0] = ObjectAnimator.ofFloat(mIconView, "translationY", SettingsFeatures.isSplitTabletDevice() ? DisplayUtils.dp2px(getContext(), -27.0f) : DisplayUtils.dp2px(getContext(), -30.0f));
+            animators[1] = ObjectAnimator.ofFloat(mVersionLayout, "translationY", SettingsFeatures.isSplitTabletDevice() ? DisplayUtils.dp2px(getContext(), -27.0f) : DisplayUtils.dp2px(getContext(), -30.0f));
+            animators[2] = animatorSet;
+            mAnimatorSet.playTogether(animators);
+            mAnimatorSet.setDuration(1000L);
+            mAnimatorSet.setInterpolator(mInterpolater);
+            mAnimatorSet.setStartDelay(100L);
+            mAnimatorSet.start();
+            mUpdateText.setClickable(true);
+            mUpdateText.setOnClickListener(this);
+        }
     }
 
     private void setLogoBlur() {
@@ -340,9 +440,9 @@ public class VersionCard extends FrameLayout {
             MiuiBlurUtils.setBackgroundBlur(mRootView, (int) ((getResources().getDisplayMetrics().density * 50.0f) + 0.5f));
             MiuiBlurUtils.setViewBlurMode(mRootView, 0);
             int[] logoColors = {
-                getResources().getColor(R.color.app_about_logo_color1, getContext().getTheme()),
-                getResources().getColor(R.color.app_about_logo_color2, getContext().getTheme()),
-                getResources().getColor(R.color.app_about_logo_color3, getContext().getTheme())
+                getResources().getColor(R.color.app_about_logo_color1),
+                getResources().getColor(R.color.app_about_logo_color2),
+                getResources().getColor(R.color.app_about_logo_color3)
             };
             if (ViewUtils.isNightMode(getContext().getApplicationContext())) {
                 mModeValue = 18;
@@ -377,8 +477,17 @@ public class VersionCard extends FrameLayout {
     public void setCardClickView(View view, View view2) {
         mActionBar = view2;
         mCardClickView = view;
-        view2.setAccessibilityTraversalBefore(R.id.version_card_click_view);
-        mCardClickView.setContentDescription(mVersionName);
+        view.setOnClickListener(this);
+        boolean needUpdate = !TextUtils.isEmpty(getUpdateInfo());
+        mNeedUpdate = needUpdate;
+        if (needUpdate) {
+            mUpdateText.setAccessibilityTraversalBefore(R.id.version_card_click_view);
+            view2.setAccessibilityTraversalBefore(R.id.update_hint_text);
+            mCardClickView.setContentDescription(mVersionName + " , " + getContext().getString(R.string.app_version_update));
+        } else {
+            view2.setAccessibilityTraversalBefore(R.id.version_card_click_view);
+            mCardClickView.setContentDescription(mVersionName);
+        }
     }
 
     public void stopLogoAnimation() {
@@ -395,8 +504,23 @@ public class VersionCard extends FrameLayout {
         mAboutAnimationController.startAnimation(i, mIconView, mUpdateText, mVersionLayout, view, view2);
     }
 
+    public void setUpdateInfo(@Nullable String updateInfo) {
+        mUpdateInfo = updateInfo == null ? "" : updateInfo.trim();
+        checkUpdate();
+        applyUpdateButtonVisibility();
+        if (mNeedUpdate) {
+            mNeedStartAnim = true;
+            invalidate();
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        mHandler.removeMessages(0);
+    }
+
+    public String getUpdateInfo() {
+        return mUpdateInfo;
     }
 }

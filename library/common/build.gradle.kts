@@ -27,12 +27,12 @@ android {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 dependencies {
     api(libs.bundles.miuix)
-    // libxposed API 100
+    // libxposed API 102
     compileOnlyApi(libs.libxposed.api)
 }

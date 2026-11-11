@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ This file is part of HyperCeiler.
+  ~
+  ~ HyperCeiler is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ Copyright (C) 2023-2026 HyperCeiler Contributions
+  -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:myLocation="@string/system_ui_other_title"
+    app:quick_restart="com.android.systemui">
+    <PreferenceCategory
+        android:key="prefs_key_system_ui_monet"
+        android:title="@string/system_ui_monet_title">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_monet_overlay_custom"
+            android:summary="@string/system_ui_monet_overlay_custom_desc"
+            android:title="@string/system_ui_monet_overlay_custom" />
+
+        <ColorPickerPreference
+            android:defaultValue="-1"
+            android:dependency="prefs_key_system_ui_monet_overlay_custom"
+            android:key="prefs_key_system_ui_monet_overlay_custom_color"
+            android:title="@string/system_ui_monet_overlay_custom_color" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/system_ui_notification_title">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_framework_allow_manage_all_notifications"
+            android:summary="@string/system_ui_other_notification_fix"
+            android:title="@string/system_framework_allow_manage_all_notifications" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_notification_freeform"
+            android:summary="@string/system_ui_notification_freeform_desc"
+            android:title="@string/system_ui_notification_freeform" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/floating_window">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_disable_miui_multi_win_switch"
+            android:summary="@string/system_ui_disable_miui_multi_win_switch_desc"
+            android:title="@string/system_ui_disable_miui_multi_win_switch" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_remove_miui_multi_win_switch"
+            android:title="@string/system_ui_remove_miui_multi_win_switch" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_disable_infinitymode_gesture"
+            android:summary="@string/system_ui_disable_infinitymode_gesture_sum"
+            android:title="@string/system_ui_disable_infinitymode_gesture" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_disable_bottombar"
+            android:title="@string/system_ui_disable_bottombar" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/system_ui_another_title">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:title="@string/system_framework_background_blur_toast"
+            android:key="prefs_key_system_framework_background_blur_toast" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_unlock_clipboard"
+            android:summary="@string/system_ui_unlock_clipboard_desc"
+            android:title="@string/system_ui_unlock_clipboard" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_move_log_to_miui"
+            android:title="@string/system_ui_move_log_to_miui" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:isPreferenceVisible="false">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefs_key_system_ui_qs_label"
+            android:title="@string/system_ui_qs_label" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

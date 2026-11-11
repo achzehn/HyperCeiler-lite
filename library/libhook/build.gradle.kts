@@ -19,6 +19,8 @@ android {
     defaultConfig {
         minSdk = 35
 
+        consumerProguardFiles("consumer-rules.pro")
+
         buildConfigField("String", "APP_MODULE_ID", "\"com.sevtinge.hyperceiler\"")
     }
 
@@ -36,13 +38,13 @@ android {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 kotlin {
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 
     compilerOptions {
@@ -63,13 +65,13 @@ dependencies {
     api(libs.expansion)
     compileOnlyApi(projects.library.hiddenApi)
 
-    // libxposed API 101
-    api(projects.library.xposedApi101)
+    // libxposed API 102 (compileOnly, runs against framework on device)
     compileOnlyApi(libs.libxposed.api)
     api(libs.libxposed.service)
 
     api(libs.dexkit)
-    api(libs.ezxhelper.core)
+    api(libs.ezhooktool.core)
+    api(libs.ezhooktool.xposed102)
     api(libs.hiddenapibypass)
     api(libs.gson)
     api(libs.hyperfocusapi)
